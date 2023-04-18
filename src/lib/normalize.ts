@@ -22,3 +22,22 @@ export function getTimeAgo(timestamp: number) {
 
   return daysAgo == 1 ? `${daysAgo} day ago`: `${daysAgo} days ago`;
 }
+
+// Convert timestamp into string in the format of "Month Day, Year"
+export function formatDate(timestamp: number) {
+  // Convert timestamp to milliseconds
+  const milliseconds = timestamp * 1000;
+
+  // Create a new Date object from the milliseconds
+  const dateObject = new Date(milliseconds);
+
+  // Get the year, month, and day components from the date object
+  const year = dateObject.getFullYear();
+  const month = dateObject.toLocaleString('default', { month: 'long' });
+  const day = dateObject.getDate();
+
+  const dateString = `${month} ${day}, ${year}`;
+
+  // Return the formatted string
+  return dateString;
+}

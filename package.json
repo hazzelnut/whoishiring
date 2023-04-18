@@ -29,6 +29,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@types/html-to-text": "^9.0.0",
+		"html-to-text": "^9.0.5",
 		"p-limit": "^4.0.0"
 	}
 }

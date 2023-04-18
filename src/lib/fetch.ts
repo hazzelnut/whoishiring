@@ -32,7 +32,6 @@ export async function getLatestStoryAndItems(fetch: loadFetch): Promise<ItemJson
   // Re-use function to fetch whoishiring post and comments
   const fetchItemJson = async <T>(itemId: number): Promise<T> => {
     const url = firebaseItem(itemId);
-    console.log(url)
     const resp = await fetch(url);
     const json = (await resp.json()) as T;
     return json;

@@ -2,7 +2,7 @@ import { getLatestStoryAndItems, type ItemJson } from '../lib/fetch';
 import { getTimeAgo } from '../lib/normalize';
 import type { PageServerLoad } from './$types';
 
-interface ExtendedItemJson extends ItemJson {
+export interface ExtendedItemJson extends ItemJson {
   timeAgo: string;
 } 
 
