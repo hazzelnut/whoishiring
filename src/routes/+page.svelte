@@ -114,6 +114,7 @@
     Saved Posts: {Object.keys(savedPosts).length}
   </div>
 
+  <!-- TODO Infinite scroll -->
   {#each data.posts as post}
     <div class="post">
       <div class="postInfo">

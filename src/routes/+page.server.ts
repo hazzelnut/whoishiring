@@ -67,10 +67,10 @@ export const load = (async ({ url }) => {
   // Sort by latest to oldest;
   // Faster to sort client side than in a order query
   // to Supabase
-  if (sort == 'newest') {
-    posts.sort((postA, postB) => postB.time - postA.time);
-  } else {
+  if (sort == 'oldest') {
     posts.sort((postA, postB) => postA.time - postB.time);
+  } else {
+    posts.sort((postA, postB) => postB.time - postA.time);
   }
 
   return { posts };
