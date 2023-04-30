@@ -136,7 +136,6 @@
 
 <main>
   <!-- TODO: There's a progress bar for how far I'm scrolling. ie how many job posts left to read -->
-  <!-- TODO: Build a fetch request :( '/api/search?sort=...&text=...' -->
   <form>
     <input type="search" name="q"/>
     <button>Search</button>
@@ -147,17 +146,6 @@
       on:click={() => toggleSort()}
     />
   </form>
-
-  <!-- <form on:submit|preventDefault={handleSubmit} >
-    <input
-      type="submit"
-      name="sort"
-      value={sort}
-      on:click={() => toggleSort()}
-    />
-
-    <button name="sort" value={sort} on:click={() => toggleSort()}>{sort}</button>
-  </form> -->
 
   <div class="savedStats">
     <button on:click={() => copyAllPosts()}>Copy</button>
