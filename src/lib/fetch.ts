@@ -1,3 +1,6 @@
+import { env } from "$env/dynamic/private";
+import { createClient } from "@supabase/supabase-js";
+import { getTimeAgo } from "./normalize";
 import pLimit from "p-limit";
 
 export interface ItemJson {
@@ -20,9 +23,10 @@ interface StoryItemJson {
   time: number;
 }
 
+// Fetch posts from HN
 type loadFetch = (input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response>;
-// Ref: https://github.com/gadogado/hn-hired/blob/main/scripts/get-latest-story.server.ts
 export async function getLatestStoryAndItems(fetch: loadFetch): Promise<ItemJson[]> {
+  // Ref: https://github.com/gadogado/hn-hired/blob/main/scripts/get-latest-story.server.ts
   const firebaseUrl = "https://hacker-news.firebaseio.com/v0";
   const firebaseStories = await fetch(
     `${firebaseUrl}/user/whoishiring/submitted.json`
@@ -48,8 +52,6 @@ export async function getLatestStoryAndItems(fetch: loadFetch): Promise<ItemJson
     throw new Error("Story is not 'who is hiring'");
   }
 
-  // Splicing makes it faster.
-  // TODO: Transmit pagination for infinite scroll
   const itemIds = latest.kids; 
 
   // NOTE: Is concurreny of 20 promises running
@@ -64,4 +66,92 @@ export async function getLatestStoryAndItems(fetch: loadFetch): Promise<ItemJson
   );
 
   return jobPosts;
+}
+
+
+// Get job postings from Supabase
+export interface ExtendedItemJson extends ItemJson {
+  timeAgo: string;
+}
+
+export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], count: number}> {
+  const sort = url.searchParams.get('sort') || 'newest';
+  const q = url.searchParams.get('q')?.trim() || '';
+  const startIndex = Number(url.searchParams.get('startIndex')) || 0
+
+  const supabaseUrl = 'https://unlkhbznammyxxtrejhq.supabase.co'
+  const supabaseKey = env.SUPABASE_KEY;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  const query = supabase.from("jobs")
+                        .select('*', { count: 'exact' })
+                        .order('time', { ascending: sort === 'oldest'})
+                        .range(startIndex, startIndex + 11)
+
+  if (q) {
+    // <-> Means the match for a word followed immediately
+    //     by a match of the next word
+    //     ex. 'full stack': Match for 'full' immediately followed by match for 'stack'
+    const arr = q.split(/\s+/);
+    const result = arr.map(word => `'${word}'`).join(' <-> ');
+
+    console.log(result)
+    query.textSearch('fts', result)
+  }
+
+  // BUG: Pagination is breaking the search :/
+  // TODO: Search pagination doesn't work when sorted.
+  //       First newest isn't the last of oldest sorted.
+
+  // NOTE: Serverless function should also index the text column to make search faster
+  // Ref: https://supabase.com/docs/guides/database/full-text-search#searchable-columns
+
+  const { data, count } = await query
+
+  // NOTE: Can't guarantee type here if we edit DB
+  //       would prisma solve this?
+  return {
+    data: data as ExtendedItemJson[],
+    count: count as number
+  };
+}
+
+// TODO: Write serverless function to run
+// cron job to fill data into supabase database
+// to add complete data
+
+/*  Serverless function to cron to insert into Supabase */
+export async function addJobsToSupabase(posts: ExtendedItemJson[]) {
+  const supabaseUrl = 'https://unlkhbznammyxxtrejhq.supabase.co'
+  const supabaseKey = env.SUPABASE_KEY;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  posts.map(async (post) => {
+    try {
+      const response = await supabase.from("jobs").insert({
+        ...post,
+        kids: JSON.stringify(post?.kids || []),
+        json: JSON.stringify(post)
+      });
+      console.log(response);
+    } catch(e) {
+      console.error(e)
+    }
+  });
+}
+
+export async function getJobsFromHN(): Promise<ExtendedItemJson[]> {
+  // Ref:  https://kit.svelte.dev/docs/load#making-fetch-requests
+  let posts = await getLatestStoryAndItems(fetch);
+
+  // filter dead and deleted posts
+  posts = posts.filter(post => !post?.dead && !post?.deleted);
+
+  // Add a few nice-to-have params to display on front-end
+  // but insert into Supabase DB
+  const updatedPosts = posts.map(post => ({
+    ...post,
+    timeAgo: getTimeAgo(post.time)}
+  )) as ExtendedItemJson[];
+
+  return updatedPosts;
 }
