@@ -2,7 +2,7 @@
 
 I'm using SvelteKit to make this app!
 
-It takes all the job posts from the latest monthly HN 'Who is hiring' post, and I attempt to make it more usuable.
+It takes all the job posts from the latest monthly HN 'Who is hiring' post, and delivers, I hope, a way better user interface.
 
 ## April 29, 2023
 Here's a sneak peek! It has the basic sort and search functionality and infinite scroll!
