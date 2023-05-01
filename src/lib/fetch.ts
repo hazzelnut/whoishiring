@@ -15,6 +15,10 @@ export interface ItemJson {
   kids?: number[];
 }
 
+export interface ExtendedItemJson extends ItemJson {
+  timeAgo: string;
+}
+
 interface StoryItemJson {
   by: string;
   id: number;
@@ -69,11 +73,8 @@ export async function getLatestStoryAndItems(fetch: loadFetch): Promise<ItemJson
 }
 
 
-// Get job postings from Supabase
-export interface ExtendedItemJson extends ItemJson {
-  timeAgo: string;
-}
 
+// Get job postings from Supabase
 export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], count: number}> {
   const sort = url.searchParams.get('sort') || 'newest';
   const q = url.searchParams.get('q')?.trim() || '';
@@ -116,6 +117,8 @@ export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], cou
   };
 }
 
+
+/****** Serverless code for data ingestion *******/
 // TODO: Write serverless function to run
 // cron job to fill data into supabase database
 // to add complete data
