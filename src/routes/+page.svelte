@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { formatDate } from '$lib/normalize';
 	import type { ExtendedItemJson } from '$lib/fetch';
-	import { createClient } from '@supabase/supabase-js';
   import type { PageData } from './$types';
   import { htmlToText } from 'html-to-text';
 	import { browser } from '$app/environment';
@@ -17,6 +16,7 @@
   $: posts = data.posts;
   $: startIndex = data.startIndex;
   $: totalCount = data.totalCount
+  $: tags = data.popularTags
 
 
   /* Sorting posts */
@@ -26,7 +26,6 @@
   }
 
   /* Saved posts */
-  // TODO: This can be a store
   let savedPosts: Record<number, string>= {};
   function handleSave(post: ExtendedItemJson) {
 
@@ -71,39 +70,6 @@
   }
 
   /* Fetch more posts */
-
-  // Imagine backend api call on trigger from scroll behaviour
-  async function getJobs(startIndex: number, url: URL):  Promise<{data: ExtendedItemJson[], count: number}> {
-    const sort = url.searchParams.get('sort') || 'newest';
-    const q = url.searchParams.get('q') || '';
-
-    const supabaseUrl = 'https://unlkhbznammyxxtrejhq.supabase.co'
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVubGtoYnpuYW1teXh4dHJlamhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODIwMzQwNTEsImV4cCI6MTk5NzYxMDA1MX0.2Ir-NGcSDnFqe9e1jNNOVkaswsdaWtPKGwHB91Psq-Q'
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const query = supabase.from("jobs")
-                          .select('*', { count: 'exact' })
-                          .order('time', { ascending: sort === 'oldest'})
-                          .range(startIndex, startIndex + 11)
-
-    if (q) {
-      // <-> Means the match for a word followed immediately
-      //     by a match of the next word
-      //     ex. 'full stack': Match for 'full' immediately followed by match for 'stack'
-      const arr = q.split(/\s+/);
-      const result = arr.map(word => `'${word}'`).join(' <-> ');
-
-      query.textSearch('fts', result)
-    }
-
-    const { data, count } = await query
-
-    return {
-      data: data as ExtendedItemJson[],
-      count: count as number
-    };
-  }
-
   async function loadMoreJobs() {
     if (startIndex > totalCount) return
 
@@ -131,6 +97,15 @@
     }
   });
 
+  /* Tags */
+  let tagsToFilter: string[] = [];
+  function handleTags(tag: string) {
+    if (tagsToFilter.includes(tag)) {
+      tagsToFilter = tagsToFilter.filter((t) => t !== tag);
+    } else {
+      tagsToFilter = [...tagsToFilter, tag];
+    }
+  }
 
 </script>
 
@@ -145,6 +120,21 @@
       value={sort}
       on:click={() => toggleSort()}
     />
+
+    <br />
+    <label for="tags">Popular filters: </label>
+    {#each tags as tag}
+      <button on:click={() => handleTags(tag)}>{tag}</button>
+    {/each}
+    <!-- Use hidden input to send tags info in URL -->
+    {#if tagsToFilter.length > 0}
+      <input 
+        type="hidden"
+        id="tags"
+        name="tags"
+        value={tagsToFilter}
+      />
+    {/if}
   </form>
 
   <div class="savedStats">
