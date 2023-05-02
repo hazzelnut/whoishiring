@@ -78,6 +78,7 @@ export async function getLatestStoryAndItems(fetch: loadFetch): Promise<ItemJson
 export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], count: number}> {
   const sort = url.searchParams.get('sort') || 'newest';
   const q = url.searchParams.get('q')?.trim() || '';
+  const tags = url.searchParams.get('tags') || '';
   const startIndex = Number(url.searchParams.get('startIndex')) || 0
 
   const supabaseUrl = 'https://unlkhbznammyxxtrejhq.supabase.co'
@@ -90,13 +91,15 @@ export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], cou
                         .range(startIndex, startIndex + 11)
 
   if (q) {
-    // <-> Means the match for a word followed immediately
-    //     by a match of the next word
-    //     ex. 'full stack': Match for 'full' immediately followed by match for 'stack'
-    const arr = q.split(/\s+/);
-    const result = arr.map(word => `'${word}'`).join(' <-> ');
+    console.log('query: ', q)
+    query.textSearch('fts', `'${q}'`)
+  }
 
-    console.log(result)
+  if (tags) {
+    const arr = tags.split(',');
+    const result = arr.map(word => `'${word}'`).join(' & ');
+    console.log('tags: ', result)
+
     query.textSearch('fts', result)
   }
 
@@ -116,7 +119,6 @@ export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], cou
     count: count as number
   };
 }
-
 
 /****** Serverless code for data ingestion *******/
 // TODO: Write serverless function to run
