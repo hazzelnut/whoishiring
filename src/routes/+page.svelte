@@ -142,7 +142,7 @@
     Saved Posts: {Object.keys(savedPosts).length}
   </div>
 
-  <p>{totalCount} results</p>
+  <p>{totalCount || 0} results</p>
 
   {#each posts as post}
     <div class="post">
