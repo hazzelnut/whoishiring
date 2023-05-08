@@ -13,10 +13,13 @@
   //       when used in the HTML part.
 
 
-  $: posts = data.posts;
-  $: startIndex = data.startIndex;
+  // $: posts = data.posts;
+  // $: startIndex = data.startIndex;
+  // $: totalCount = data.totalCount
+  // $: tags = data.popularTags
+
+  $: posts = data.items
   $: totalCount = data.totalCount
-  $: tags = data.popularTags
 
 
   /* Sorting posts */
@@ -70,32 +73,32 @@
   }
 
   /* Fetch more posts */
-  async function loadMoreJobs() {
-    if (startIndex > totalCount) return
+  // async function loadMoreJobs() {
+  //   if (startIndex > totalCount) return
 
-    startIndex = startIndex + 12
+  //   startIndex = startIndex + 12
 
-    const url = new URL(window.location.href)
+  //   const url = new URL(window.location.href)
 
-    // For pagination
-    url.searchParams.append('startIndex', startIndex.toString())
+  //   // For pagination
+  //   url.searchParams.append('startIndex', startIndex.toString())
 
-    const response = await fetch('/api/posts?' + url.searchParams.toString())
-    const { data: morePosts } = await response.json()
+  //   const response = await fetch('/api/posts?' + url.searchParams.toString())
+  //   const { data: morePosts } = await response.json()
 
-    posts = [...posts, ...morePosts]
-  }
+  //   posts = [...posts, ...morePosts]
+  // }
 
   /* Infinite scroll */
   // Ref: https://github.com/rodneylab/sveltekit-instagram-infinite-scroll/blob/main/src/routes/%2Bpage.svelte
-  let footer: Element;
-  onMount(() => {
-    if (browser) {
-      const options = { threshold: 0, rootMargin: '0% 0% 300%'};
-      const observer = new IntersectionObserver(loadMoreJobs, options);
-      if (footer) observer.observe(footer)
-    }
-  });
+  // let footer: Element;
+  // onMount(() => {
+  //   if (browser) {
+  //     const options = { threshold: 0, rootMargin: '0% 0% 300%'};
+  //     const observer = new IntersectionObserver(loadMoreJobs, options);
+  //     if (footer) observer.observe(footer)
+  //   }
+  // });
 
   /* Tags */
   let tagsToFilter: string[] = [];
@@ -117,15 +120,15 @@
     <input
       type="submit"
       name="sort"
-      value={sort}
+      bind:value={sort}
       on:click={() => toggleSort()}
     />
 
     <br />
     <label for="tags">Popular filters: </label>
-    {#each tags as tag}
+    <!-- {#each tags as tag}
       <button on:click={() => handleTags(tag)}>{tag}</button>
-    {/each}
+    {/each} -->
     <!-- Use hidden input to send tags info in URL -->
     {#if tagsToFilter.length > 0}
       <input 
@@ -146,12 +149,12 @@
 
   {#each posts as post}
     <div class="post">
-      <div class="postInfo">
+      <!-- <div class="postInfo">
         <p>{post.by}</p>
         <p class="timeAgo">{post.timeAgo}</p>
-      </div>
+      </div> -->
       <p class="content">{@html post.text}</p>
-      <button
+      <!-- <button
         class={
           'saveBtn ' +
           `${Object.hasOwn(savedPosts, post.id) && "saved"}`
@@ -159,13 +162,13 @@
         on:click={() => handleSave(post)}
       >
         {Object.hasOwn(savedPosts, post.id) ? 'SAVED' : 'Save'}
-      </button>
+      </button> -->
     </div>
     <br />
   {/each}
-  <footer bind:this={footer}>
+  <!-- <footer bind:this={footer}>
     <small>Eric Chan, 2023</small>
-  </footer>
+  </footer> -->
 </main>
 
 <style>

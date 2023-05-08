@@ -16,6 +16,8 @@ export function getTimeAgo(timestamp: number) {
   // const weeksAgo = Math.floor(timeDiff / millisecondsPerWeek);
   // const monthsAgo = Math.floor(timeDiff / millisecondsPerMonth);
 
+  // TODO: More granularity for minutes!
+
   if (hoursAgo < 24) {
     return hoursAgo == 1 ? `${hoursAgo} hour ago`: `${hoursAgo} hours ago`;
   }
