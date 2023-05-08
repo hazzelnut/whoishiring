@@ -28,8 +28,7 @@ interface StoryItemJson {
 }
 
 // Fetch posts from HN
-type loadFetch = (input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response>;
-export async function getLatestStoryAndItems(fetch: loadFetch): Promise<ItemJson[]> {
+export async function getLatestStoryAndItems(): Promise<ItemJson[]> {
   // Ref: https://github.com/gadogado/hn-hired/blob/main/scripts/get-latest-story.server.ts
   const firebaseUrl = "https://hacker-news.firebaseio.com/v0";
   const firebaseStories = await fetch(
@@ -146,7 +145,7 @@ export async function addJobsToSupabase(posts: ExtendedItemJson[]) {
 
 export async function getJobsFromHN(): Promise<ExtendedItemJson[]> {
   // Ref:  https://kit.svelte.dev/docs/load#making-fetch-requests
-  let posts = await getLatestStoryAndItems(fetch);
+  let posts = await getLatestStoryAndItems();
 
   // filter dead and deleted posts
   posts = posts.filter(post => !post?.dead && !post?.deleted);
