@@ -1,7 +1,7 @@
-import { env } from "$env/dynamic/private";
-import { createClient } from "@supabase/supabase-js";
 import { getTimeAgo } from "./normalize";
 import pLimit from "p-limit";
+import supabase from "./supabase/client";
+import { tags } from "./tags";
 
 export interface ItemJson {
   by: string;
@@ -80,10 +80,6 @@ export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], cou
   const tags = url.searchParams.get('tags') || '';
   const startIndex = Number(url.searchParams.get('startIndex')) || 0
 
-  const supabaseUrl = 'https://unlkhbznammyxxtrejhq.supabase.co'
-  const supabaseKey = env.SUPABASE_KEY;
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
   const query = supabase.from("jobs")
                         .select('*', { count: 'exact' })
                         .order('time', { ascending: sort === 'oldest'})
@@ -126,9 +122,6 @@ export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], cou
 
 /*  Serverless function to cron to insert into Supabase */
 export async function addJobsToSupabase(posts: ExtendedItemJson[]) {
-  const supabaseUrl = 'https://unlkhbznammyxxtrejhq.supabase.co'
-  const supabaseKey = env.SUPABASE_KEY;
-  const supabase = createClient(supabaseUrl, supabaseKey);
   posts.map(async (post) => {
     try {
       const response = await supabase.from("jobs").insert({
@@ -158,4 +151,124 @@ export async function getJobsFromHN(): Promise<ExtendedItemJson[]> {
   )) as ExtendedItemJson[];
 
   return updatedPosts;
+}
+
+//  Function to fetch whoishiring post and comments
+export async function fetchItemJson<T>(itemId: number): Promise<T> {
+  const firebaseUrl = "https://hacker-news.firebaseio.com/v0";
+  const firebaseItem = (itemId: number) => `${firebaseUrl}/item/${itemId}.json`;
+
+  const url = firebaseItem(itemId);
+  const resp = await fetch(url);
+  const json = (await resp.json()) as T;
+  return json;
+};
+
+
+export async function getLatestStoryHN(): Promise<StoryItemJson> {
+  const firebaseUrl = "https://hacker-news.firebaseio.com/v0";
+  const firebaseStories = await fetch(
+    `${firebaseUrl}/user/whoishiring/submitted.json`
+  );
+
+  const stories = (await firebaseStories.json()) as Array<number>;
+
+  // The first story from whoishiring user
+  // is always the latest 'Ask HN: Who is Hiring?'
+  const storyId = stories[0];
+  const latest = await fetchItemJson<StoryItemJson>(storyId);
+
+  if (!latest?.title?.match(/Ask HN: Who is hiring/)) {
+    throw new Error("Story is not 'who is hiring'");
+  }
+
+  return latest
+}
+
+export async function upsertStory(storyHN: StoryItemJson) {
+  const { id: firebaseId, title } = storyHN
+  const upsert = {
+    updatedAt: new Date(Date.now()).toISOString(),
+    firebaseCreatedAt: new Date(storyHN.time * 1000).toISOString(),
+    firebaseId,
+    title,
+  }
+
+  // Ref: https://supabase.com/docs/reference/javascript/upsert
+  // ignoreDuplicates: false -> 'duplicate rows merged with existing rows'
+  // Create or update existing row
+  const { data } = await supabase.from('Story')
+                                 .upsert({ ...upsert}, { onConflict: 'firebaseId', ignoreDuplicates: false }) 
+                                 .select()
+                                 .limit(1)
+                                 .single()
+  return data
+}
+
+export async function matchTags(text: string) {
+  return tags.reduce((accum: string[], slug) => {
+    const escaped = slug.replace(/(\.|\+)/g, `\\$&`);
+    const re = new RegExp(escaped, "gi");
+
+    if (text.match(re)) accum.push(slug);
+    return accum;
+  }, []);
+};
+
+interface ItemTextMatches {
+  remote: boolean;
+  tags: string[];
+}
+export async function scanItemText(text: string): Promise<ItemTextMatches> {
+  const matcher = (m: string): boolean => !!text.match(new RegExp(m, "gi"));
+
+  const remote = matcher("remote");
+  const tags = await matchTags(text);
+
+  return { remote, tags };
+};
+
+export async function upsertItems(itemIds: number[], storyId: number) {
+  const limit = pLimit(20);
+
+  const itemsInserted = await Promise.all(
+    itemIds.map(async (itemId: number) => {
+      return limit(async () => {
+        const item = await fetchItemJson<ItemJson>(itemId);
+
+        if (!item || item?.deleted || item?.dead) {
+          console.log('--- skipping ---', item)
+          return
+        }
+
+        const { by, time, text, id: firebaseId } = item
+        const { remote, tags } = await scanItemText(text)
+
+        const upsert = {
+          by,
+          text,
+          remote,
+          firebaseId,
+          firebaseCreatedAt: new Date(time * 1000).toISOString(),
+          updatedAt: new Date(Date.now()).toISOString(),
+          json: JSON.stringify(item),
+          storyId,
+          tags,
+        }
+
+        // Ref: https://supabase.com/docs/reference/javascript/upsert
+        // ignoreDuplicates: false -> 'duplicate rows merged with existing rows'
+        // Create or update existing row
+        const { data } = await supabase.from('Item')
+                                            .upsert({ ...upsert }, { onConflict: 'firebaseId', ignoreDuplicates: false}) // if text has changed, update the item
+                                            .select()
+                                            .limit(1)
+                                            .single()
+
+        return { ...data }
+      })
+    })
+  );
+
+  return itemsInserted
 }
