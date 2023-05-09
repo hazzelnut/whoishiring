@@ -72,18 +72,30 @@ export async function getLatestStoryAndItems(): Promise<ItemJson[]> {
 }
 
 
+export async function getLatestStory() {
+  const { data } = await supabase.from('Story')
+                                 .select()
+                                 .order('firebaseCreatedAt', { ascending: false })
+                                 .limit(1)
+                                 .single()
+  return data
+}
+
 
 // Get job postings from Supabase
-export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], count: number}> {
+export async function getJobs(url: URL) {
   const sort = url.searchParams.get('sort') || 'newest';
   const q = url.searchParams.get('q')?.trim() || '';
   const tags = url.searchParams.get('tags') || '';
   const startIndex = Number(url.searchParams.get('startIndex')) || 0
 
-  const query = supabase.from("jobs")
-                        .select('*', { count: 'exact' })
-                        .order('time', { ascending: sort === 'oldest'})
+  // TODO: Pass this in in the URL
+  const latestStoryId = 1
+  const query = supabase.from('Item')
+                        .select('by, text, firebaseCreatedAt', { count: 'exact' })
+                        .order('firebaseCreatedAt', { ascending: sort === 'oldest'})
                         .range(startIndex, startIndex + 11)
+                        .eq('storyId', latestStoryId)
 
   if (q) {
     console.log('query: ', q)
@@ -92,26 +104,15 @@ export async function getJobs(url: URL):  Promise<{data: ExtendedItemJson[], cou
 
   if (tags) {
     const arr = tags.split(',');
-    const result = arr.map(word => `'${word}'`).join(' & ');
-    console.log('tags: ', result)
-
-    query.textSearch('fts', result)
+    console.log('tags: ', arr)
+    query.contains('tags', arr)
   }
-
-  // BUG: Pagination is breaking the search :/
-  // TODO: Search pagination doesn't work when sorted.
-  //       First newest isn't the last of oldest sorted.
-
-  // NOTE: Serverless function should also index the text column to make search faster
-  // Ref: https://supabase.com/docs/guides/database/full-text-search#searchable-columns
 
   const { data, count } = await query
 
-  // NOTE: Can't guarantee type here if we edit DB
-  //       would prisma solve this?
   return {
-    data: data as ExtendedItemJson[],
-    count: count as number
+    data,
+    count,
   };
 }
 
@@ -271,4 +272,32 @@ export async function upsertItems(itemIds: number[], storyId: number) {
   );
 
   return itemsInserted
+}
+
+export async function upsertStoryToTags(tagsToCounts: Record<string, number>, storyId: number) {
+  for (const [tag, count] of Object.entries(tagsToCounts)) {
+    const storyToTagId = `${storyId}${tag}`
+    const upsert = {
+      storyId,
+      tag,
+      count,
+      storyToTagId,
+      updatedAt: new Date(Date.now()).toISOString(),
+    }
+    const response  = await supabase.from('StoryToTags')
+                                    .upsert({ ...upsert }, { onConflict: 'storyToTagId', ignoreDuplicates: false})
+                                    .select()
+
+    console.log('StoryToTags response: ', response)
+  }
+}
+
+// TODO: get the latestStory
+export async function getPopularTags(storyId: number) {
+  const { data } = await supabase.from('StoryToTags')
+                                 .select('tag')
+                                 .order('count', { ascending: false })
+                                 .eq('storyId', storyId)
+                                 .limit(20)
+  return data?.map(tag => tag.tag)
 }

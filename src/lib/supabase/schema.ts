@@ -15,6 +15,7 @@ export interface Database {
           createdAt: string
           firebaseCreatedAt: string
           firebaseId: number
+          fts: unknown | null
           id: number
           json: Json | null
           remote: boolean
@@ -28,6 +29,7 @@ export interface Database {
           createdAt?: string
           firebaseCreatedAt: string
           firebaseId: number
+          fts?: unknown | null
           id?: number
           json?: Json | null
           remote?: boolean
@@ -41,6 +43,7 @@ export interface Database {
           createdAt?: string
           firebaseCreatedAt?: string
           firebaseId?: number
+          fts?: unknown | null
           id?: number
           json?: Json | null
           remote?: boolean
@@ -78,19 +81,31 @@ export interface Database {
       }
       StoryToTags: {
         Row: {
+          count: number
+          createdAt: string
           id: number
           storyId: number
-          tags: string[]
+          storyToTagId: string
+          tag: string
+          updatedAt: string
         }
         Insert: {
+          count: number
+          createdAt?: string
           id?: number
           storyId: number
-          tags: string[]
+          storyToTagId: string
+          tag: string
+          updatedAt: string
         }
         Update: {
+          count?: number
+          createdAt?: string
           id?: number
           storyId?: number
-          tags?: string[]
+          storyToTagId?: string
+          tag?: string
+          updatedAt?: string
         }
       }
     }
