@@ -115,15 +115,11 @@ export async function getJobs(url: URL) {
     console.log('tags: ', result)
 
     query.textSearch('fts', result)
-
-    // NOTE: fts is a bit slower than contains, but at least results are consisten
-    // const arr = tags.split(',');
-    // console.log('tags: ', arr)
-    // query.contains('tags', arr)
   }
 
   const { data, count, error } = await query
 
+  // BUG: Sometimes range is not satifiable, fix?
   if (data === null || count === null || error) throw new Error(`Could not fetch any items. Error: ${JSON.stringify(error)}`)
 
   return {

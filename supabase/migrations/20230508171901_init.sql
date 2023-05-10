@@ -53,6 +53,9 @@ CREATE UNIQUE INDEX "StoryToTags_storyToTagId_key" ON "StoryToTags"("storyToTagI
 -- CreateIndex
 CREATE UNIQUE INDEX "Item_firebaseId_key" ON "Item"("firebaseId");
 
+-- CreateIndex on firebaseCreatedAt for descending
+CREATE INDEX "Item_firebaseCreatedAt_desc_key" ON "Item"("firebaseCreatedAt" DESC);
+
 -- CreateIndex on storyId for where / equality chec
 CREATE INDEX "Item_storyId_key" ON "Item"("storyId");
 
