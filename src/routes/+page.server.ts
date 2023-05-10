@@ -1,12 +1,11 @@
-import { getJobs, getLatestStoryHN, getPopularTags, upsertItems, upsertStory, upsertStoryToTags } from '$lib/fetch';
+import { getJobs, getLatestStory, getLatestStoryHN, getPopularTags, upsertItems, upsertStory, upsertStoryToTags } from '$lib/fetch';
 import type { PageServerLoad } from './$types';
 
 
 export const load = (async ({ url }) => {
-  // /* Serverless data ingestion functions */
+  // // /* Serverless data ingestion functions */
   // const latestStoryHN = await getLatestStoryHN()
   // const latestStory = await upsertStory(latestStoryHN)
-  // if (!latestStory) throw new Error('Latest story upserted could not be returned!')
 
   // const latestItems = await upsertItems(latestStoryHN.kids, latestStory.id)
   // if (!latestItems) throw new Error('Items userted could not be returned!')
@@ -20,12 +19,14 @@ export const load = (async ({ url }) => {
   //   return counts
   // }, {});
 
+
   // // store this record in StoryToTags
   // await upsertStoryToTags(tagsToCounts, latestStory.id)
 
-  const storyId = 1
+  const latestStory = await getLatestStory()
   const { data: posts, count: totalCount } = await getJobs(url)
-  const popularTags = await getPopularTags(storyId)
 
-  return { posts, startIndex: 0, totalCount, popularTags };
+  const popularTags = await getPopularTags(latestStory.id)
+
+  return { posts, totalCount, popularTags, storyId: latestStory.id, startIndex: 0,};
 }) satisfies PageServerLoad;

@@ -3,10 +3,10 @@ CREATE TABLE "Story" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "firebaseId" INTEGER NOT NULL,
-    "firebaseCreatedAt" TIMESTAMP(3) NOT NULL,
+    "firebaseCreatedAt" TIMESTAMP(3) WITH TIME ZONE NOT NULL,
 
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) WITH TIME ZONE NOT NULL,
 
     CONSTRAINT "Story_pkey" PRIMARY KEY ("id")
 );
@@ -16,15 +16,16 @@ CREATE TABLE "Item" (
     "id" SERIAL NOT NULL,
     "by" TEXT NOT NULL,
     "text" TEXT NOT NULL,
+    "htmlText" TEXT NOT NULL,
     "firebaseId" INTEGER NOT NULL,
-    "firebaseCreatedAt" TIMESTAMP(3) NOT NULL,
+    "firebaseCreatedAt" TIMESTAMP(3) WITH TIME ZONE NOT NULL,
     "storyId" INTEGER NOT NULL,
     "json" JSONB,
     "remote" BOOLEAN NOT NULL DEFAULT false,
     "tags" TEXT[] NOT NULL,
 
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) WITH TIME ZONE NOT NULL,
 
     CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
 );
@@ -37,8 +38,8 @@ CREATE TABLE "StoryToTags" (
     "count" INTEGER NOT NULL,
     "storyToTagId" TEXT NOT NULL, 
 
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) WITH TIME ZONE NOT NULL,
 
     CONSTRAINT "StoryToTags_pkey" PRIMARY KEY ("id")
 );
@@ -52,11 +53,11 @@ CREATE UNIQUE INDEX "StoryToTags_storyToTagId_key" ON "StoryToTags"("storyToTagI
 -- CreateIndex
 CREATE UNIQUE INDEX "Item_firebaseId_key" ON "Item"("firebaseId");
 
--- CreateIndex on firebaseCreatedAt for descending (default)
+-- CreateIndex on firebaseCreatedAt for descending
 CREATE INDEX "Item_firebaseCreatedAt_desc_key" ON "Item"("firebaseCreatedAt" DESC);
 
--- CreateIndex on tags for filtering / where clauses
-CREATE INDEX "Item_tags_key" ON "Item"("tags");
+-- CreateIndex on firebaseCreatedAt for ascending
+CREATE INDEX "Item_firebaseCreatedAt_asc_key" ON "Item"("firebaseCreatedAt" ASC);
 
 -- CreateIndex on storyId for where / equality chec
 CREATE INDEX "Item_storyId_key" ON "Item"("storyId");
@@ -71,7 +72,7 @@ ALTER TABLE "Item" ADD CONSTRAINT "Item_storyId_fkey" FOREIGN KEY ("storyId") RE
 ALTER TABLE "StoryToTags" ADD CONSTRAINT "StoryToTags_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- CreateColumn For Full Text Search
-ALTER TABLE "Item" ADD COLUMN "fts" TSVECTOR GENERATED ALWAYS AS (TO_TSVECTOR('english', ("text") || ' ' )) STORED;
+ALTER TABLE "Item" ADD COLUMN "fts" TSVECTOR GENERATED ALWAYS AS (TO_TSVECTOR('english', ("text"))) STORED;
 
 -- CreateIndex For Full Text Search
 CREATE INDEX "Item_text_key" ON "Item" USING GIN("fts");

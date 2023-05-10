@@ -1,7 +1,7 @@
-import { getTimeAgo } from "./normalize";
 import pLimit from "p-limit";
 import supabase from "./supabase/client";
 import { tags } from "./tags";
+import { htmlToText } from "html-to-text";
 
 export interface ItemJson {
   by: string;
@@ -73,11 +73,13 @@ export async function getLatestStoryAndItems(): Promise<ItemJson[]> {
 
 
 export async function getLatestStory() {
-  const { data } = await supabase.from('Story')
+  const { data, error } = await supabase.from('Story')
                                  .select()
                                  .order('firebaseCreatedAt', { ascending: false })
                                  .limit(1)
                                  .single()
+
+  if (!data || error) throw new Error(`Could not fetch latest story! Error: ${error}`)
   return data
 }
 
@@ -89,13 +91,18 @@ export async function getJobs(url: URL) {
   const tags = url.searchParams.get('tags') || '';
   const startIndex = Number(url.searchParams.get('startIndex')) || 0
 
-  // TODO: Pass this in in the URL
-  const latestStoryId = 1
+  let storyId = url.searchParams.get('storyId');
+  if (!storyId) {
+    const latestStory = await getLatestStory()
+
+    storyId = (latestStory.id).toString()
+  }
+
   const query = supabase.from('Item')
-                        .select('by, text, firebaseCreatedAt', { count: 'exact' })
+                        .select('id, by, text, htmlText, firebaseCreatedAt', { count: 'exact' })
                         .order('firebaseCreatedAt', { ascending: sort === 'oldest'})
                         .range(startIndex, startIndex + 11)
-                        .eq('storyId', latestStoryId)
+                        .eq('storyId', storyId)
 
   if (q) {
     console.log('query: ', q)
@@ -104,16 +111,25 @@ export async function getJobs(url: URL) {
 
   if (tags) {
     const arr = tags.split(',');
-    console.log('tags: ', arr)
-    query.contains('tags', arr)
+    const result = arr.map(word => `'${word}'`).join(' & ');
+    console.log('tags: ', result)
+
+    query.textSearch('fts', result)
+
+    // NOTE: fts is a bit slower than contains, but at least results are consisten
+    // const arr = tags.split(',');
+    // console.log('tags: ', arr)
+    // query.contains('tags', arr)
   }
 
-  const { data, count } = await query
+  const { data, count, error } = await query
+
+  if (data === null || count === null || error) throw new Error(`Could not fetch any items. Error: ${JSON.stringify(error)}`)
 
   return {
     data,
     count,
-  };
+  }
 }
 
 /****** Serverless code for data ingestion *******/
@@ -121,38 +137,38 @@ export async function getJobs(url: URL) {
 // cron job to fill data into supabase database
 // to add complete data
 
-/*  Serverless function to cron to insert into Supabase */
-export async function addJobsToSupabase(posts: ExtendedItemJson[]) {
-  posts.map(async (post) => {
-    try {
-      const response = await supabase.from("jobs").insert({
-        ...post,
-        kids: JSON.stringify(post?.kids || []),
-        json: JSON.stringify(post)
-      });
-      console.log(response);
-    } catch(e) {
-      console.error(e)
-    }
-  });
-}
+// /*  Serverless function to cron to insert into Supabase */
+// export async function addJobsToSupabase(posts: ExtendedItemJson[]) {
+//   posts.map(async (post) => {
+//     try {
+//       const response = await supabase.from("jobs").insert({
+//         ...post,
+//         kids: JSON.stringify(post?.kids || []),
+//         json: JSON.stringify(post)
+//       });
+//       console.log(response);
+//     } catch(e) {
+//       console.error(e)
+//     }
+//   });
+// }
 
-export async function getJobsFromHN(): Promise<ExtendedItemJson[]> {
-  // Ref:  https://kit.svelte.dev/docs/load#making-fetch-requests
-  let posts = await getLatestStoryAndItems();
+// export async function getJobsFromHN(): Promise<ExtendedItemJson[]> {
+//   // Ref:  https://kit.svelte.dev/docs/load#making-fetch-requests
+//   let posts = await getLatestStoryAndItems();
 
-  // filter dead and deleted posts
-  posts = posts.filter(post => !post?.dead && !post?.deleted);
+//   // filter dead and deleted posts
+//   posts = posts.filter(post => !post?.dead && !post?.deleted);
 
-  // Add a few nice-to-have params to display on front-end
-  // but insert into Supabase DB
-  const updatedPosts = posts.map(post => ({
-    ...post,
-    timeAgo: getTimeAgo(post.time)}
-  )) as ExtendedItemJson[];
+//   // Add a few nice-to-have params to display on front-end
+//   // but insert into Supabase DB
+//   const updatedPosts = posts.map(post => ({
+//     ...post,
+//     timeAgo: getTimeAgo(post.time)}
+//   )) as ExtendedItemJson[];
 
-  return updatedPosts;
-}
+//   return updatedPosts;
+// }
 
 //  Function to fetch whoishiring post and comments
 export async function fetchItemJson<T>(itemId: number): Promise<T> {
@@ -187,10 +203,10 @@ export async function getLatestStoryHN(): Promise<StoryItemJson> {
 }
 
 export async function upsertStory(storyHN: StoryItemJson) {
-  const { id: firebaseId, title } = storyHN
+  const { id: firebaseId, title, time } = storyHN
   const upsert = {
-    updatedAt: new Date(Date.now()).toISOString(),
-    firebaseCreatedAt: new Date(storyHN.time * 1000).toISOString(),
+    updatedAt: new Date().toISOString(),
+    firebaseCreatedAt: new Date(time * 1000).toISOString(),
     firebaseId,
     title,
   }
@@ -203,13 +219,22 @@ export async function upsertStory(storyHN: StoryItemJson) {
                                  .select()
                                  .limit(1)
                                  .single()
+
+  if (!data) throw new Error('Latest story upserted could not be returned!')
   return data
 }
 
-export async function matchTags(text: string) {
+export function matchTags(text: string) {
   return tags.reduce((accum: string[], slug) => {
     const escaped = slug.replace(/(\.|\+)/g, `\\$&`);
-    const re = new RegExp(escaped, "gi");
+
+    // My version of the proximity '<->' Postgres full-text search.
+    // Match each word followed immediately by the next word.
+    const zeroProximity = escaped.split(' ').join(`(.?|)`)
+
+    // Match the word separately, by itself
+    const boundary = `\\b${zeroProximity}\\b`
+    const re = new RegExp(boundary, "gi");
 
     if (text.match(re)) accum.push(slug);
     return accum;
@@ -242,16 +267,18 @@ export async function upsertItems(itemIds: number[], storyId: number) {
           return
         }
 
-        const { by, time, text, id: firebaseId } = item
+        const { by, time, text: htmlText, id: firebaseId } = item
+        const text = htmlToText(htmlText)
         const { remote, tags } = await scanItemText(text)
 
         const upsert = {
           by,
           text,
+          htmlText,
           remote,
           firebaseId,
           firebaseCreatedAt: new Date(time * 1000).toISOString(),
-          updatedAt: new Date(Date.now()).toISOString(),
+          updatedAt: new Date().toISOString(),
           json: JSON.stringify(item),
           storyId,
           tags,
@@ -282,7 +309,7 @@ export async function upsertStoryToTags(tagsToCounts: Record<string, number>, st
       tag,
       count,
       storyToTagId,
-      updatedAt: new Date(Date.now()).toISOString(),
+      updatedAt: new Date().toISOString(),
     }
     const response  = await supabase.from('StoryToTags')
                                     .upsert({ ...upsert }, { onConflict: 'storyToTagId', ignoreDuplicates: false})
@@ -294,10 +321,13 @@ export async function upsertStoryToTags(tagsToCounts: Record<string, number>, st
 
 // TODO: get the latestStory
 export async function getPopularTags(storyId: number) {
-  const { data } = await supabase.from('StoryToTags')
+  const { data, error } = await supabase.from('StoryToTags')
                                  .select('tag')
                                  .order('count', { ascending: false })
                                  .eq('storyId', storyId)
                                  .limit(20)
-  return data?.map(tag => tag.tag)
+
+  if (data === null || error) throw new Error(`Could not fetch popular tags! Error: ${error}`)
+
+  return data.map(tag => tag.tag)
 }

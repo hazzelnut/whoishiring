@@ -16,6 +16,7 @@ export interface Database {
           firebaseCreatedAt: string
           firebaseId: number
           fts: unknown | null
+          htmlText: string
           id: number
           json: Json | null
           remote: boolean
@@ -30,6 +31,7 @@ export interface Database {
           firebaseCreatedAt: string
           firebaseId: number
           fts?: unknown | null
+          htmlText: string
           id?: number
           json?: Json | null
           remote?: boolean
@@ -44,6 +46,7 @@ export interface Database {
           firebaseCreatedAt?: string
           firebaseId?: number
           fts?: unknown | null
+          htmlText?: string
           id?: number
           json?: Json | null
           remote?: boolean

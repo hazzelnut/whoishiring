@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatDate } from '$lib/normalize';
+	import { formatDate, getTimeAgo } from '$lib/normalize';
 	import type { ExtendedItemJson } from '$lib/fetch';
   import type { PageData } from './$types';
   import { htmlToText } from 'html-to-text';
@@ -17,6 +17,7 @@
   $: startIndex = data.startIndex;
   $: totalCount = data.totalCount
   $: tags = data.popularTags
+  $: storyId = data.storyId
 
 
   /* Sorting posts */
@@ -27,12 +28,13 @@
 
   /* Saved posts */
   let savedPosts: Record<number, string>= {};
-  function handleSave(post: ExtendedItemJson) {
-
+  function handleSave(post: { //<reference types="svelte" />
+		  id: number; by: string; text: string; htmlText: string; firebaseCreatedAt: string;
+	  }) {
     const text = 
-      `Posted: ${formatDate(post.time)}` +
+      `Posted: ${formatDate(post.firebaseCreatedAt)}` +
       '<br/><br/>\n\n' +
-      `${post.text}`;
+      `${post.htmlText}`;
 
     if (Object.hasOwn(savedPosts, post.id)) {
       const { [post.id]: _deletedPost, ...restPosts} = savedPosts
@@ -71,7 +73,7 @@
 
   /* Fetch more posts */
   async function loadMoreJobs() {
-    if (startIndex > totalCount) return
+    if (startIndex > totalCount || totalCount == 0) return
 
     startIndex = startIndex + 12
 
@@ -83,7 +85,9 @@
     const response = await fetch('/api/posts?' + url.searchParams.toString())
     const { data: morePosts } = await response.json()
 
-    posts = [...posts, ...morePosts]
+    if (morePosts.length > 0) {
+      posts = [...posts, ...morePosts]
+    }
   }
 
   /* Infinite scroll */
@@ -135,6 +139,13 @@
         value={tagsToFilter}
       />
     {/if}
+    <!-- Hidden input for story id -->
+    <input
+      type="hidden"
+      id="storyId"
+      name="storyId"
+      value={storyId}
+    />
   </form>
 
   <div class="savedStats">
@@ -148,9 +159,9 @@
     <div class="post">
       <div class="postInfo">
         <p>{post.by}</p>
-        <p class="timeAgo">{post.timeAgo}</p>
+        <p class="timeAgo">{getTimeAgo(post.firebaseCreatedAt)}</p>
       </div>
-      <p class="content">{@html post.text}</p>
+      <p class="content">{@html post.htmlText}</p>
       <button
         class={
           'saveBtn ' +

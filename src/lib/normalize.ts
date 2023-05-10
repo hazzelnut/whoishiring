@@ -1,43 +1,30 @@
 /* Normalize values */
 
-export function getTimeAgo(timestamp: number) {
-  const currentDate = new Date();
-  const previousDate = new Date(timestamp * 1000); // convert to milliseconds
-  const millisecondsPerHour = 60 * 60 * 1000;
-  const millisecondsPerDay = 24 * 60 * 60 * 1000;
-  // NOTE: If we want less granularity than days
-  // const millisecondsPerWeek = 7 * millisecondsPerDay;
-  // const millisecondsPerMonth = 30.44 * millisecondsPerDay;
-
-  const timeDiff = currentDate.getTime() - previousDate.getTime();
-  const hoursAgo = Math.floor(timeDiff / millisecondsPerHour);
-  const daysAgo = Math.floor(timeDiff / millisecondsPerDay);
-  // NOTE: If we want less granularity than days
-  // const weeksAgo = Math.floor(timeDiff / millisecondsPerWeek);
-  // const monthsAgo = Math.floor(timeDiff / millisecondsPerMonth);
-
-  if (hoursAgo < 24) {
-    return hoursAgo == 1 ? `${hoursAgo} hour ago`: `${hoursAgo} hours ago`;
-  }
-
-  return daysAgo == 1 ? `${daysAgo} day ago`: `${daysAgo} days ago`;
+export function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
-// Convert timestamp into string in the format of "Month Day, Year"
-export function formatDate(timestamp: number) {
-  // Convert timestamp to milliseconds
-  const milliseconds = timestamp * 1000;
+// There's a bug with the time stamp!
+export function getTimeAgo (dateString: string) {
+  const old = new Date(dateString);
+  const now = new Date();
 
-  // Create a new Date object from the milliseconds
-  const dateObject = new Date(milliseconds);
+  const diff = Math.abs(now.valueOf() - old.valueOf());
+  const minutes = Math.floor(diff / (1000 * 60));
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
 
-  // Get the year, month, and day components from the date object
-  const year = dateObject.getFullYear();
-  const month = dateObject.toLocaleString('default', { month: 'long' });
-  const day = dateObject.getDate();
-
-  const dateString = `${month} ${day}, ${year}`;
-
-  // Return the formatted string
-  return dateString;
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`;
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+  } else {
+    return 'Just now';
+  }
 }
