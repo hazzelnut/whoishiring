@@ -28,13 +28,20 @@
 
   /* Saved posts */
   let savedPosts: Record<number, string>= {};
-  function handleSave(post: { //<reference types="svelte" />
-		  id: number; by: string; text: string; htmlText: string; firebaseCreatedAt: string;
-	  }) {
+  // Inferred by Supabase schema for getting items
+  interface Post {
+		  id: number;
+      by: string;
+      text: string;
+      htmlText: string;
+      firebaseCreatedAt: string;
+  }
+  function handleSave(post: Post) {
     const text = 
       `Posted: ${formatDate(post.firebaseCreatedAt)}` +
       '<br/><br/>\n\n' +
       `${post.htmlText}`;
+    
 
     if (Object.hasOwn(savedPosts, post.id)) {
       const { [post.id]: _deletedPost, ...restPosts} = savedPosts
@@ -49,6 +56,9 @@
     // TODO: Doesn't work on Safari Mobile :/
     const textType = "text/plain";
     const htmlType = "text/html";
+
+    // TODO: refactor to not use htmlToText since I now have
+    //       htmlText and text fields 
 
     const htmlBlob = new Blob([html], { type: htmlType });
     const textBlob = new Blob([htmlToText(html)], { type: textType });
@@ -85,7 +95,7 @@
     const response = await fetch('/api/posts?' + url.searchParams.toString())
     const { data: morePosts } = await response.json()
 
-    if (morePosts.length > 0) {
+    if (morePosts?.length > 0) {
       posts = [...posts, ...morePosts]
     }
   }
@@ -127,6 +137,7 @@
 
     <br />
     <label for="tags">Popular filters: </label>
+    <button on:click={() => tagsToFilter = []}>Reset filters</button>
     {#each tags as tag}
       <button on:click={() => handleTags(tag)}>{tag}</button>
     {/each}
