@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { formatDate, getTimeAgo } from '$lib/normalize';
-	import type { ExtendedItemJson } from '$lib/fetch';
   import type { PageData } from './$types';
   import { htmlToText } from 'html-to-text';
 	import { browser } from '$app/environment';
@@ -16,7 +15,6 @@
   $: posts = data.posts;
   $: startIndex = data.startIndex;
   $: totalCount = data.totalCount
-  $: tags = data.popularTags
   $: storyId = data.storyId
 
 
@@ -102,12 +100,18 @@
 
   /* Infinite scroll */
   // Ref: https://github.com/rodneylab/sveltekit-instagram-infinite-scroll/blob/main/src/routes/%2Bpage.svelte
-  let footer: Element;
-  onMount(() => {
+  let footer: Element
+  let tags: string[] = []
+  onMount(async () => {
     if (browser) {
       const options = { threshold: 0, rootMargin: '0% 0% 300%'};
       const observer = new IntersectionObserver(loadMoreJobs, options);
       if (footer) observer.observe(footer)
+
+
+      /* Load Tags */
+      const response = await fetch('/api/tags')
+      tags = await response.json()
     }
   });
 
@@ -124,7 +128,6 @@
 </script>
 
 <main>
-  <!-- TODO: There's a progress bar for how far I'm scrolling. ie how many job posts left to read -->
   <form>
     <input type="search" name="q"/>
     <button>Search</button>
