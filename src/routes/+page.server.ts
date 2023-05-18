@@ -23,10 +23,15 @@ export const load = (async ({ url }) => {
   // // store this record in StoryToTags
   // await upsertStoryToTags(tagsToCounts, latestStory.id)
 
-  const latestStory = await getLatestStory()
+  // TODO: Load popular tags in the browser instead?
+  let storyId = url.searchParams.get('storyId')
+  if (!storyId) {
+    const latestStory = await getLatestStory()
+    storyId = latestStory.id.toString()
+  }
+
   const { data: posts, count: totalCount } = await getJobs(url)
 
-  const popularTags = await getPopularTags(latestStory.id)
 
-  return { posts, totalCount, popularTags, storyId: latestStory.id, startIndex: 0,};
+  return { posts, totalCount, storyId, startIndex: 0};
 }) satisfies PageServerLoad;
