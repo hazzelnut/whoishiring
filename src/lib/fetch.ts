@@ -90,6 +90,7 @@ export async function getJobs(url: URL) {
   const q = url.searchParams.get('q')?.trim() || '';
   const tags = url.searchParams.get('tags') || '';
   const startIndex = Number(url.searchParams.get('startIndex')) || 0
+  const remote = url.searchParams.get('remote') || ''
 
   let storyId = url.searchParams.get('storyId');
   if (!storyId) {
@@ -115,6 +116,10 @@ export async function getJobs(url: URL) {
     console.log('tags: ', result)
 
     query.textSearch('fts', result)
+  }
+
+  if (remote === 'true') {
+    query.eq('remote', remote)
   }
 
   const { data, count, error } = await query

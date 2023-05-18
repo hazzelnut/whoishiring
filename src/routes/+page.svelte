@@ -103,11 +103,11 @@
   let footer: Element
   let tags: string[] = []
   onMount(async () => {
+
     if (browser) {
       const options = { threshold: 0, rootMargin: '0% 0% 300%'};
       const observer = new IntersectionObserver(loadMoreJobs, options);
       if (footer) observer.observe(footer)
-
 
       /* Load Tags */
       const response = await fetch('/api/tags')
@@ -125,6 +125,9 @@
     }
   }
 
+  /* Remote toggle */
+  let remote = false
+
 </script>
 
 <main>
@@ -139,24 +142,38 @@
     />
 
     <br />
-    <label for="tags">Popular filters: </label>
-    <button on:click={() => tagsToFilter = []}>Reset filters</button>
-    {#each tags as tag}
-      <button on:click={() => handleTags(tag)}>{tag}</button>
-    {/each}
+    {#if tags.length > 0}
+      <span>Popular filters:</span>
+      <button on:click={() => tagsToFilter = []}>Reset filters</button>
+      {#each tags as tag}
+        <button on:click={() => handleTags(tag)}>{tag}</button>
+      {/each}
+    {/if}
+
+    <br />
+    <button on:click={() => remote = !remote}>Remote Only: {remote}</button>
+
+    <!-- Use hidden input to send remote filter to URL -->
+    {#if remote}
+      <input
+        type="hidden"
+        name="remote"
+        value={remote}
+      />
+    {/if}
+
     <!-- Use hidden input to send tags info in URL -->
     {#if tagsToFilter.length > 0}
       <input 
         type="hidden"
-        id="tags"
         name="tags"
         value={tagsToFilter}
       />
     {/if}
+
     <!-- Hidden input for story id -->
     <input
       type="hidden"
-      id="storyId"
       name="storyId"
       value={storyId}
     />
