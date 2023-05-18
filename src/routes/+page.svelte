@@ -103,14 +103,14 @@
   let footer: Element
   let tags: string[] = []
   onMount(async () => {
-
     if (browser) {
       const options = { threshold: 0, rootMargin: '0% 0% 300%'};
       const observer = new IntersectionObserver(loadMoreJobs, options);
       if (footer) observer.observe(footer)
 
       /* Load Tags */
-      const response = await fetch('/api/tags')
+      const url = new URL(window.location.href)
+      const response = await fetch('/api/tags?' + url.searchParams.toString())
       tags = await response.json()
     }
   });
@@ -134,12 +134,9 @@
   <form>
     <input type="search" name="q"/>
     <button>Search</button>
-    <input
-      type="submit"
-      name="sort"
-      value={sort}
-      on:click={() => toggleSort()}
-    />
+
+    <br />
+    <button on:click={() => toggleSort()}>{sort}</button>
 
     <br />
     {#if tags.length > 0}
@@ -151,7 +148,23 @@
     {/if}
 
     <br />
+
+    <!-- Buttons do a form submit without page refresh -->
     <button on:click={() => remote = !remote}>Remote Only: {remote}</button>
+
+    <!-- Use hidden input to send sort filter to URL -->
+    <input
+      type="hidden"
+      name="sort"
+      value={sort}
+    />
+
+    <!-- Hidden input for story id -->
+    <input
+      type="hidden"
+      name="storyId"
+      value={storyId}
+    />
 
     <!-- Use hidden input to send remote filter to URL -->
     {#if remote}
@@ -171,12 +184,6 @@
       />
     {/if}
 
-    <!-- Hidden input for story id -->
-    <input
-      type="hidden"
-      name="storyId"
-      value={storyId}
-    />
   </form>
 
   <div class="savedStats">
