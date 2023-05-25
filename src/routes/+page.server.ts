@@ -1,14 +1,16 @@
-import { getJobs } from '$lib/fetch';
+import { getJobs, getLatestStory } from '$lib/fetch';
 import type { PageServerLoad } from './$types';
-import { tags as popularTags } from '$lib/tags';
 
 
 export const load = (async ({ url }) => {
-  // const postToLoad = await getJobsFromHN()
-  // await addJobsToSupabase(postToLoad)
+  let storyId = url.searchParams.get('storyId')
+  if (!storyId) {
+    const latestStory = await getLatestStory()
+    storyId = latestStory.id.toString()
+  }
 
-  const {data: posts, count: totalCount } = await getJobs(url);
-  // TODO: Need to return popular tags based on data ingestion time
+  const { data: posts, count: totalCount } = await getJobs(url)
 
-  return { posts, startIndex: 0, totalCount, popularTags };
+
+  return { posts, totalCount, storyId, startIndex: 0};
 }) satisfies PageServerLoad;

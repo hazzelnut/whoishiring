@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { formatDate } from '$lib/normalize';
-	import type { ExtendedItemJson } from '$lib/fetch';
+	import { formatDate, getTimeAgo } from '$lib/normalize';
   import type { PageData } from './$types';
   import { htmlToText } from 'html-to-text';
 	import { browser } from '$app/environment';
@@ -16,7 +15,7 @@
   $: posts = data.posts;
   $: startIndex = data.startIndex;
   $: totalCount = data.totalCount
-  $: tags = data.popularTags
+  $: storyId = data.storyId
 
 
   /* Sorting posts */
@@ -27,12 +26,20 @@
 
   /* Saved posts */
   let savedPosts: Record<number, string>= {};
-  function handleSave(post: ExtendedItemJson) {
-
+  // Inferred by Supabase schema for getting items
+  interface Post {
+		  id: number;
+      by: string;
+      text: string;
+      htmlText: string;
+      firebaseCreatedAt: string;
+  }
+  function handleSave(post: Post) {
     const text = 
-      `Posted: ${formatDate(post.time)}` +
+      `Posted: ${formatDate(post.firebaseCreatedAt)}` +
       '<br/><br/>\n\n' +
-      `${post.text}`;
+      `${post.htmlText}`;
+    
 
     if (Object.hasOwn(savedPosts, post.id)) {
       const { [post.id]: _deletedPost, ...restPosts} = savedPosts
@@ -47,6 +54,9 @@
     // TODO: Doesn't work on Safari Mobile :/
     const textType = "text/plain";
     const htmlType = "text/html";
+
+    // TODO: refactor to not use htmlToText since I now have
+    //       htmlText and text fields 
 
     const htmlBlob = new Blob([html], { type: htmlType });
     const textBlob = new Blob([htmlToText(html)], { type: textType });
@@ -71,7 +81,7 @@
 
   /* Fetch more posts */
   async function loadMoreJobs() {
-    if (startIndex > totalCount) return
+    if (startIndex > totalCount || totalCount == 0) return
 
     startIndex = startIndex + 12
 
@@ -83,17 +93,25 @@
     const response = await fetch('/api/posts?' + url.searchParams.toString())
     const { data: morePosts } = await response.json()
 
-    posts = [...posts, ...morePosts]
+    if (morePosts?.length > 0) {
+      posts = [...posts, ...morePosts]
+    }
   }
 
   /* Infinite scroll */
   // Ref: https://github.com/rodneylab/sveltekit-instagram-infinite-scroll/blob/main/src/routes/%2Bpage.svelte
-  let footer: Element;
-  onMount(() => {
+  let footer: Element
+  let tags: string[] = []
+  onMount(async () => {
     if (browser) {
       const options = { threshold: 0, rootMargin: '0% 0% 300%'};
       const observer = new IntersectionObserver(loadMoreJobs, options);
       if (footer) observer.observe(footer)
+
+      /* Load Tags */
+      const url = new URL(window.location.href)
+      const response = await fetch('/api/tags?' + url.searchParams.toString())
+      tags = await response.json()
     }
   });
 
@@ -107,34 +125,65 @@
     }
   }
 
+  /* Remote toggle */
+  let remote = false
+
 </script>
 
 <main>
-  <!-- TODO: There's a progress bar for how far I'm scrolling. ie how many job posts left to read -->
   <form>
     <input type="search" name="q"/>
     <button>Search</button>
-    <input
-      type="submit"
-      name="sort"
-      value={sort}
-      on:click={() => toggleSort()}
-    />
 
     <br />
-    <label for="tags">Popular filters: </label>
-    {#each tags as tag}
-      <button on:click={() => handleTags(tag)}>{tag}</button>
-    {/each}
+    <button on:click={() => toggleSort()}>{sort}</button>
+
+    <br />
+    {#if tags.length > 0}
+      <span>Popular filters:</span>
+      <button on:click={() => tagsToFilter = []}>Reset filters</button>
+      {#each tags as tag}
+        <button on:click={() => handleTags(tag)}>{tag}</button>
+      {/each}
+    {/if}
+
+    <br />
+
+    <!-- Buttons do a form submit without page refresh -->
+    <button on:click={() => remote = !remote}>Remote Only: {remote}</button>
+
+    <!-- Use hidden input to send sort filter to URL -->
+    <input
+      type="hidden"
+      name="sort"
+      value={sort}
+    />
+
+    <!-- Hidden input for story id -->
+    <input
+      type="hidden"
+      name="storyId"
+      value={storyId}
+    />
+
+    <!-- Use hidden input to send remote filter to URL -->
+    {#if remote}
+      <input
+        type="hidden"
+        name="remote"
+        value={remote}
+      />
+    {/if}
+
     <!-- Use hidden input to send tags info in URL -->
     {#if tagsToFilter.length > 0}
       <input 
         type="hidden"
-        id="tags"
         name="tags"
         value={tagsToFilter}
       />
     {/if}
+
   </form>
 
   <div class="savedStats">
@@ -148,9 +197,9 @@
     <div class="post">
       <div class="postInfo">
         <p>{post.by}</p>
-        <p class="timeAgo">{post.timeAgo}</p>
+        <p class="timeAgo">{getTimeAgo(post.firebaseCreatedAt)}</p>
       </div>
-      <p class="content">{@html post.text}</p>
+      <p class="content">{@html post.htmlText}</p>
       <button
         class={
           'saveBtn ' +
