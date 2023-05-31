@@ -17,3 +17,16 @@ The final version will be much more beautiful, I promise.
 
 https://user-images.githubusercontent.com/6500879/235334665-304fd248-45f1-40dd-9753-c747ecfe1c1c.mp4
 
+# Deploying to Fly.io
+
+1. Install flyctl and login, see [here](https://fly.io/docs/hands-on/install-flyctl/)
+2. Update your adapter in svelte.config.js to use `adapter-node`, see [here](https://kit.svelte.dev/docs/adapter-node)
+3. Add a start script in your package.json. 
+  ```js
+    // Have environment variables you need need in production? Run 'npm install dotenv'
+		"start": "node -r dotenv/config build"
+    // Or, if you don't need environment variables
+		"start": "node build"
+  ```
+4. Run `fly launch`. It will guide you through the process of deploying your app.
+5. Done! Navigate to your new site at `<name_of_app>.fly.dev`
