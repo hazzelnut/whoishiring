@@ -10,10 +10,12 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"gen_types": "supabase gen types typescript --linked --schema public | tee src/lib/supabase/schema.ts > supabase/functions/shared/schema.ts"
+		"gen_types": "supabase gen types typescript --linked --schema public | tee src/lib/supabase/schema.ts > supabase/functions/shared/schema.ts",
+		"start": "node -r dotenv/config build"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/adapter-node": "^1.2.4",
 		"@sveltejs/kit": "^1.5.0",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
@@ -32,6 +34,7 @@
 	"dependencies": {
 		"@supabase/supabase-js": "^2.21.0",
 		"@types/html-to-text": "^9.0.0",
+		"dotenv": "^16.1.1",
 		"html-to-text": "^9.0.5",
 		"p-limit": "^4.0.0"
 	}
