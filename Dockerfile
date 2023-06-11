@@ -4,9 +4,9 @@
 ARG NODE_VERSION=18.16.0
 FROM node:${NODE_VERSION}-slim as base
 
-LABEL fly_launch_runtime="NodeJS"
+LABEL fly_launch_runtime="Node.js"
 
-# NodeJS app lives here
+# Node.js app lives here
 WORKDIR /app
 
 # Set production environment
@@ -21,8 +21,8 @@ RUN apt-get update -qq && \
     apt-get install -y python-is-python3 pkg-config build-essential 
 
 # Install node modules
-COPY --link package.json package-lock.json .
-RUN npm install --production=false
+COPY --link .npmrc package-lock.json package.json ./
+RUN npm ci --include=dev
 
 # Copy application code
 COPY --link . .
@@ -31,7 +31,7 @@ COPY --link . .
 RUN npm run build
 
 # Remove development dependencies
-RUN npm prune --production
+RUN npm prune --omit=dev
 
 
 # Final stage for app image
@@ -41,4 +41,5 @@ FROM base
 COPY --from=build /app /app
 
 # Start the server by default, this can be overwritten at runtime
+EXPOSE 3000
 CMD [ "npm", "run", "start" ]
