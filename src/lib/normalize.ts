@@ -1,7 +1,7 @@
 /* Normalize values */
 
-export function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-US", {
+export function formatDate(date: Date) {
+  return date.toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -9,8 +9,8 @@ export function formatDate(dateString: string) {
 }
 
 // There's a bug with the time stamp!
-export function getTimeAgo (dateString: string) {
-  const old = new Date(dateString);
+export function getTimeAgo (date: Date) {
+  const old = date;
   const now = new Date();
 
   const diff = Math.abs(now.valueOf() - old.valueOf());
