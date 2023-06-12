@@ -11,7 +11,6 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"generate": "drizzle-kit generate:pg",
-		"build:scripts": "esbuild scripts/**/*.ts scripts/*.ts --outdir=build-scripts --out-extension:.js=.mjs",
 		"migrate": "tsx -r dotenv/config ./scripts/migrate.ts",
 		"ingest": " tsx -r dotenv/config ./scripts/cron-ingest.ts",
 		"start": "node -r dotenv/config build"
