@@ -12,7 +12,9 @@
 		"format": "prettier --plugin-search-dir . --write .",
 		"gen_types": "supabase gen types typescript --linked --schema public | tee src/lib/supabase/schema.ts > supabase/functions/shared/schema.ts",
 		"generate": "drizzle-kit generate:pg",
-		"migrate": "node -r dotenv/config migrate.js",
+		"build:scripts": "esbuild scripts/**/*.ts scripts/*.ts --outdir=build-scripts --out-extension:.js=.mjs",
+		"ingest": " tsx -r dotenv/config ./scripts/cron-ingest.ts",
+		"migrate": "tsx -r dotenv/config ./scripts/migrate.ts",
 		"start": "node -r dotenv/config build"
 	},
 	"devDependencies": {
@@ -31,6 +33,7 @@
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
 		"tslib": "^2.4.1",
+		"tsx": "^3.12.7",
 		"typescript": "^5.0.0",
 		"vite": "^4.2.0"
 	},
