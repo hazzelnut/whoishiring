@@ -69,7 +69,7 @@ export async function upsertStory(storyHN: StoryItemJson) {
   }
 
   type NewStory = InferModel<typeof Story, "insert">;
-  const upsertStory = async (s: NewStory) => {
+  const upsertStory = (s: NewStory) => {
     return db.insert(Story)
              .values(s)
              .onConflictDoUpdate({ target: Story.firebaseId, set: s })
@@ -114,7 +114,7 @@ export async function upsertItems(itemIds: number[], storyId: number) {
 
 
         type NewItem = InferModel<typeof Item, "insert">;
-        const upsertItem = async (n: NewItem) => {
+        const upsertItem = (n: NewItem) => {
           return db.insert(Item)
                    .values(n)
                    .onConflictDoUpdate({ target: Item.firebaseId, set: n })
@@ -177,7 +177,7 @@ export async function upsertStoryToTags(tagsToCounts: Record<string, number>, st
     }
 
     type NewStoryToTag = InferModel<typeof StoryToTags, "insert">;
-    const upsertItem = async (n: NewStoryToTag) => {
+    const upsertItem = (n: NewStoryToTag) => {
       return db.insert(StoryToTags)
                 .values(n)
                 .onConflictDoUpdate({ target: StoryToTags.storyToTagId, set: n })
