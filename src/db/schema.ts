@@ -6,8 +6,8 @@ export const Story = pgTable("Story", {
   title: text("title").notNull(),
   firebaseId: integer("firebaseId").notNull(),
   firebaseCreatedAt: timestamp("firebaseCreatedAt", { precision: 3, withTimezone: true }).notNull(),
-  createdAt: timestamp("created_at", { precision: 3, withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp("updated_at", { precision: 3, withTimezone: true }).notNull(),
+  createdAt: timestamp("createdAt", { precision: 3, withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updatedAt", { precision: 3, withTimezone: true }).notNull(),
 }, (table) => {
   return {
     firebaseIdIdx: uniqueIndex("Story_firebaseId_key").on(table.firebaseId),
@@ -27,8 +27,8 @@ export const Item = pgTable("Item", {
   tags: text("tags").array().notNull(), 
   // fts: tsvector("fts"), TODO: Add full text search
 
-  createdAt: timestamp("created_at", { precision: 3, withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp("updated_at", { precision: 3, withTimezone: true }).notNull(),
+  createdAt: timestamp("createdAt", { precision: 3, withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updatedAt", { precision: 3, withTimezone: true }).notNull(),
 }, (table) => {
   return {
     firebaseIdIdx: uniqueIndex("Item_firebaseId_key").on(table.firebaseId),
@@ -42,8 +42,8 @@ export const StoryToTags = pgTable("StoryToTags", {
   count: integer("count").notNull(),
   storyToTagId: text("storyToTagId").notNull(),
 
-  createdAt: timestamp("created_at", { precision: 3, withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp("updated_at", { precision: 3, withTimezone: true }).notNull(),
+  createdAt: timestamp("createdAt", { precision: 3, withTimezone: true }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updatedAt", { precision: 3, withTimezone: true }).notNull(),
 }, (table) => {
   return {
     storyToTagIdIdx: uniqueIndex("StoryToTags_storyToTagId_key").on(table.storyToTagId),
