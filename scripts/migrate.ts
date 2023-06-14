@@ -1,4 +1,4 @@
-import { drizzle, } from 'drizzle-orm/postgres-js';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
  
@@ -12,4 +12,4 @@ try {
   throw new Error(e)
 }
 
-process.exit()
+migrationClient.end()
