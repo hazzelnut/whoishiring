@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS "Item" (
 	"json" jsonb,
 	"remote" boolean DEFAULT false NOT NULL,
 	"tags" text[] NOT NULL,
-	"created_at" timestamp (3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updated_at" timestamp (3) with time zone NOT NULL
+	"createdAt" timestamp (3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp (3) with time zone NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "Story" (
@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS "Story" (
 	"title" text NOT NULL,
 	"firebaseId" integer NOT NULL,
 	"firebaseCreatedAt" timestamp (3) with time zone NOT NULL,
-	"created_at" timestamp (3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updated_at" timestamp (3) with time zone NOT NULL
+	"createdAt" timestamp (3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp (3) with time zone NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "StoryToTags" (
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS "StoryToTags" (
 	"tag" text NOT NULL,
 	"count" integer NOT NULL,
 	"storyToTagId" text NOT NULL,
-	"created_at" timestamp (3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updated_at" timestamp (3) with time zone NOT NULL
+	"createdAt" timestamp (3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp (3) with time zone NOT NULL
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS "Item_firebaseId_key" ON "Item" ("firebaseId");
