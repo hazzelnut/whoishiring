@@ -10,7 +10,7 @@ export function formatDate(date: Date) {
 
 // There's a bug with the time stamp!
 export function getTimeAgo (date: Date) {
-  const old = date;
+  const old = new Date(date);
   const now = new Date();
 
   const diff = Math.abs(now.valueOf() - old.valueOf());
