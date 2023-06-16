@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "a cron job to ingest data into postgres",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "schedule:ingest": " npx tsx --no-cache -r dotenv/config ./cron.ts"
+    "schedule": " npx tsx --no-cache -r dotenv/config ./cron.ts"
   },
   "dependencies": {
     "dotenv": "^16.1.4",
