@@ -1,8 +1,10 @@
-import pLimit from "https://esm.sh/p-limit";
-import { htmlToText } from "https://esm.sh/html-to-text";
+import pLimit from "p-limit";
+import { htmlToText } from "html-to-text";
+import { tags } from "./tags";
 
-import supabase from "./supabaseClient.ts";
-import { tags } from "./tags.ts";
+import db from "./client";
+import { Story, Item, StoryToTags } from "./schema"
+import { InferModel } from "drizzle-orm";
 
 interface ItemJson {
   by: string;
@@ -60,23 +62,23 @@ export async function getLatestStoryHN(): Promise<StoryItemJson> {
 export async function upsertStory(storyHN: StoryItemJson) {
   const { id: firebaseId, title, time } = storyHN
   const upsert = {
-    updatedAt: new Date().toISOString(),
-    firebaseCreatedAt: new Date(time * 1000).toISOString(),
+    updatedAt: new Date(),
+    firebaseCreatedAt: new Date(time * 1000),
     firebaseId,
     title,
   }
 
-  // Ref: https://supabase.com/docs/reference/javascript/upsert
-  // ignoreDuplicates: false -> 'duplicate rows merged with existing rows'
-  // Create or update existing row
-  const { data } = await supabase.from('Story')
-                                 .upsert({ ...upsert}, { onConflict: 'firebaseId', ignoreDuplicates: false }) 
-                                 .select()
-                                 .limit(1)
-                                 .single()
+  type NewStory = InferModel<typeof Story, "insert">;
+  const upsertStory = (s: NewStory) => {
+    return db.insert(Story)
+             .values(s)
+             .onConflictDoUpdate({ target: Story.firebaseId, set: s })
+             .returning();
+  }
+  const data = await upsertStory(upsert)
 
-  if (!data) throw new Error('Latest story upserted could not be returned!')
-  return data
+  if (!data || data.length != 1) throw new Error('Latest story upserted could not be returned!')
+  return data[0]
 }
 
 
@@ -103,23 +105,26 @@ export async function upsertItems(itemIds: number[], storyId: number) {
           htmlText,
           remote,
           firebaseId,
-          firebaseCreatedAt: new Date(time * 1000).toISOString(),
-          updatedAt: new Date().toISOString(),
+          firebaseCreatedAt: new Date(time * 1000),
+          updatedAt: new Date(),
           json: JSON.stringify(item),
           storyId,
           tags,
         }
 
-        // Ref: https://supabase.com/docs/reference/javascript/upsert
-        // ignoreDuplicates: false -> 'duplicate rows merged with existing rows'
-        // Create or update existing row
-        const { data } = await supabase.from('Item')
-                                            .upsert({ ...upsert }, { onConflict: 'firebaseId', ignoreDuplicates: false}) // if text has changed, update the item
-                                            .select()
-                                            .limit(1)
-                                            .single()
 
-        return { ...data }
+        type NewItem = InferModel<typeof Item, "insert">;
+        const upsertItem = (n: NewItem) => {
+          return db.insert(Item)
+                   .values(n)
+                   .onConflictDoUpdate({ target: Item.firebaseId, set: n })
+                   .returning();
+        }
+        const data = await upsertItem(upsert)
+
+        if (!data || data.length != 1) throw new Error('Latest item upserted could not be returned!')
+
+        return { ...data[0] }
       })
     })
   );
@@ -168,12 +173,21 @@ export async function upsertStoryToTags(tagsToCounts: Record<string, number>, st
       tag,
       count,
       storyToTagId,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     }
-    const response  = await supabase.from('StoryToTags')
-                                    .upsert({ ...upsert }, { onConflict: 'storyToTagId', ignoreDuplicates: false})
-                                    .select()
 
-    console.log('StoryToTags response: ', response)
+    type NewStoryToTag = InferModel<typeof StoryToTags, "insert">;
+    const upsertItem = (n: NewStoryToTag) => {
+      return db.insert(StoryToTags)
+                .values(n)
+                .onConflictDoUpdate({ target: StoryToTags.storyToTagId, set: n })
+                .returning();
+    }
+
+    const data = await upsertItem(upsert)
+
+    if (!data || data.length != 1) throw new Error('Latest storyToTag upserted could not be returned!')
+
+    console.log('StoryToTags response: ', JSON.stringify(data[0]))
   }
 }

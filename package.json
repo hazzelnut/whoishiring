@@ -10,13 +10,18 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"gen_types": "supabase gen types typescript --linked --schema public | tee src/lib/supabase/schema.ts > supabase/functions/shared/schema.ts"
+		"generate": "drizzle-kit generate:pg",
+		"migrate": "npx tsx --no-cache -r dotenv/config ./scripts/migrate.ts",
+		"start": "node -r dotenv/config build"
 	},
 	"devDependencies": {
+		"@flydotio/dockerfile": "^0.2.13",
 		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/adapter-node": "^1.2.4",
 		"@sveltejs/kit": "^1.5.0",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
+		"drizzle-kit": "^0.18.1",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte3": "^4.0.0",
@@ -25,14 +30,17 @@
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
 		"tslib": "^2.4.1",
+		"tsx": "^3.12.7",
 		"typescript": "^5.0.0",
 		"vite": "^4.2.0"
 	},
 	"type": "module",
 	"dependencies": {
-		"@supabase/supabase-js": "^2.21.0",
 		"@types/html-to-text": "^9.0.0",
+		"dotenv": "^16.1.1",
+		"drizzle-orm": "^0.26.3",
 		"html-to-text": "^9.0.5",
-		"p-limit": "^4.0.0"
+		"p-limit": "^4.0.0",
+		"postgres": "^3.3.5"
 	}
 }

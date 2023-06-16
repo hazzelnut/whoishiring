@@ -11,6 +11,5 @@ export const load = (async ({ url }) => {
 
   const { data: posts, count: totalCount } = await getJobs(url)
 
-
   return { posts, totalCount, storyId, startIndex: 0};
 }) satisfies PageServerLoad;

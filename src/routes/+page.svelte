@@ -26,13 +26,13 @@
 
   /* Saved posts */
   let savedPosts: Record<number, string>= {};
-  // Inferred by Supabase schema for getting items
-  interface Post {
+  // Inferred by IDE
+  type Post = {
 		  id: number;
       by: string;
       text: string;
       htmlText: string;
-      firebaseCreatedAt: string;
+      firebaseCreatedAt: Date;
   }
   function handleSave(post: Post) {
     const text = 
