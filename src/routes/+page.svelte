@@ -51,7 +51,6 @@
 
   /* Copy to Clipboard */
   async function setClipboard(html: string) {
-    // TODO: Doesn't work on Safari Mobile :/
     const textType = "text/plain";
     const htmlType = "text/html";
 
