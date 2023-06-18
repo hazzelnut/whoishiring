@@ -298,8 +298,11 @@
   }
 
   div.search-container {
+    width: fit-content;
     position: relative;
-    width: max-content;
+
+    display: flex;
+    align-items: center;
   }
 
   div.search-container > button {
@@ -313,10 +316,9 @@
 
   button.search-cancel {
     position: absolute;
-    top: 0;
-    right: 1em;
+    right: 0em;
 
-    height: 3em;
+    height:  3em;
     width:  3em;
   }
   button.search-cancel > svg {
@@ -325,8 +327,9 @@
 
   button.search-submit {
     position: absolute;
+    right: -3.0em;
 
-    height: 3em;
+    height:  3em;
     width:  3em;
   }
   button.search-submit > svg {
