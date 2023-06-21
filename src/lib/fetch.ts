@@ -35,18 +35,17 @@ export async function getJobs(url: URL) {
     const arr = q.split(' ')
     const query = arr.map(word => `'${word}'`).join(' <-> ');
     console.log('query: ', query)
-    whereClause.push(sql`to_tsvector(${Item.text}) @@ to_tsquery(${query})`)
+    whereClause.push(sql`to_tsvector(${Item.htmlText}) @@ to_tsquery(${query})`)
 
-    // TODO: create an index column for full text search
+    // TODO: Index search but make it more accurate? .htmlText seems to get more results than .text
+    // especially around slashes(/) words around slashes?
   }
 
   if (tags) {
     const arr = tags.split(',');
     const query = arr.map(word => `'${word}'`).join(' & ');
     console.log('tags: ', query)
-    whereClause.push(sql`to_tsvector(${Item.text}) @@ to_tsquery(${query})`)
-
-    // TODO: create an index column for full text search
+    whereClause.push(sql`to_tsvector(${Item.htmlText}) @@ to_tsquery(${query})`)
   }
 
   if (remote === 'true') {
