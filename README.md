@@ -6,7 +6,7 @@ It takes all the job posts from the latest monthly HN 'Who is hiring' post, and 
 
 ## June 21, 2023
 
-Started designing my site in Figma! Still a work in progress. But you can find my scrapbook-like design board live in Figma [here](https://www.figma.com/file/6oFzUK7XW7ZraniN5Yu0so/whoishiring?type=design&node-id=0%3A1&t=o6l0XFyVDSyPRLKu-1).
+Started designing my site in Figma! Still a work in progress. You can find my scrapbook-like design board live in Figma [here](https://www.figma.com/file/6oFzUK7XW7ZraniN5Yu0so/whoishiring?type=design&node-id=0%3A1&t=o6l0XFyVDSyPRLKu-1).
 
 <img width="787" alt="design" src="https://github.com/hazzelnut/whoishiring/assets/6500879/4c387844-cb8a-47f6-af55-ff28ee534e80">
 
@@ -22,6 +22,10 @@ After researching and testing out other possible solutions, my new stack became:
 The biggest win is for me in this new setup is that I can support all the functionality for free without running into limits (yet!) and I'll probably continue with it until I need to upgrade or scale it.
 
 You can find the rough version currently at [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev)
+
+My simple fly.io setup:
+<img width="1009" alt="fly io setup" src="https://github.com/hazzelnut/whoishiring/assets/6500879/bdf19580-226e-4adb-abd8-2f57787bdc98">
+
 
 ## May 18, 2023
 We have tags! Now you can filter job posts by popular tags or keywords found across all the posts.
