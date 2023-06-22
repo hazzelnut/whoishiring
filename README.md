@@ -13,12 +13,15 @@ Started designing my site in Figma! Still a work in progress. But you can find m
 
 ## June 16, 2023
 
-I've been working on migrating the original stack over to Fly.io. Originally, my setup was: SvelteKit + Supabase DB + Supabase Edge functions. Supabase Edge function was used to schedule a cron job that would ingest data from the HN API and insert it into the DB. However, that quickly filled up the free database egress limit that Supabase had which prompted me to look for alternative solutions. 
+I've been working on migrating the original stack over to Fly.io. Originally, my setup was: SvelteKit + Supabase DB + Supabase Edge functions. Everything worked great and MVP was finished. But, there was one problem.
 
-After researching and testing out some possible solutions, my new stack is: SvelteKit + Fly.io Postgres + Fly.io Machine. Fly.io's free tier was much more generous and I was also able to deploy and host the site on their platform which was a big plus.
+The Supabase edge function was triggered by a cron job every 5 minutes, and the edge function would fetch data from the HN API and insert it into the DB. After a few days, I checked on my usages and found that I had exceeded my free database egress limit! That prompted me to look for alternative solutions. And oddly, the database usage bar was also slowly increasing even though I was only updating rows at the time and not adding more to the table. I wish I had a screenshot to show the bright red warnings, but it was clear that using Supabase wasn't viable going forward (for freeness sake).
 
-The biggest win is that this setup works great for me and I'll probably continue with it until I need to upgrade or scale it.
-You can find the rough version currently at [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev).
+After researching and testing out other possible solutions, my new stack became: SvelteKit + Drizzle ORM + Fly.io Postgres + Fly.io Machine. Fly.io's free tier was much more generous and I was also able to deploy and host the site on their platform too which was a big plus.
+
+The biggest win is for me in this new setup is that I can support all the functionality for free without running into limits (yet!) and I'll probably continue with it until I need to upgrade or scale it.
+
+You can find the rough version currently at [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev)
 
 ## May 18, 2023
 We have tags! Now you can filter job posts by popular tags or keywords found across all the posts.
