@@ -133,29 +133,32 @@
 </script>
 
 <main>
-  <!-- TODO: Do a manual form submit :/ -->
   <form data-sveltekit-noscroll>
-    <div class="search-container">
-      <input
-        type="text"
-        placeholder="Search..."
-        bind:value={search}
-      />
-
-      <button type="submit" class="search-submit">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
-      </button>
-
-      <!-- Note: Order of reset button and submit button matters here; 
-          pressing 'enter' will target the nearest submit button -->
-      <button
-        type="submit"
-        class={`search-cancel ${search.length == 0 ? 'hide' : ''}`}
-        on:click={() => search = ''}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-      </button>
-    </div>
+    <header>
+      <span>Whoishiring</span>
+      <div class="search-container">
+        <input
+          type="text"
+          placeholder="Search..."
+          bind:value={search}
+        />
+  
+        <button type="submit" class="search-submit">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+        </button>
+  
+        <!-- Note: Order of reset button and submit button matters here; 
+            pressing 'enter' will target the nearest submit button -->
+        <button
+          type="submit"
+          class={`search-cancel ${search.length == 0 ? 'hide' : ''}`}
+          tabindex="-1"
+          on:click={() => search = ''}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+    </header>
 
 
     <br />
@@ -251,7 +254,10 @@
 
 <style>
   main {
+    margin: 0 auto;
     padding: 1em;
+
+    width: 64em;
   }
   p {
     word-wrap: break-word;
@@ -302,8 +308,14 @@
     border-radius: 1em;
   }
 
+  header {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+    place-items: center;
+    row-gap: 2em;
+  }
+
   div.search-container {
-    width: fit-content;
     position: relative;
 
     display: flex;
@@ -339,5 +351,12 @@
   }
   button.search-submit > svg {
     fill: #64748b;
+  }
+
+  @media (max-width: 960px) {
+    main {
+      margin: 0;
+      width: auto;
+    }
   }
 </style>
