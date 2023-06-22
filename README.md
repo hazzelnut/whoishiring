@@ -19,7 +19,7 @@ The Supabase edge function was triggered by a cron job every 5 minutes, and the 
 
 After researching and testing out other possible solutions, my new stack became: SvelteKit + Drizzle ORM + Fly.io Postgres + Fly.io Machine. Fly.io's free tier was much more generous and I was also able to deploy and host the site on their platform too which was a big plus.
 
-The biggest win is for me in this new setup is that I can support all the functionality for free without running into limits (yet!) and I'll probably continue with it until I need to upgrade or scale it.
+The biggest win is for me is that I can support all the functionality for free without running into limits (yet!). 
 
 You can find the rough version currently at [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev)
 
