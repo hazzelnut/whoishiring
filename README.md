@@ -13,7 +13,7 @@ Started designing my site in Figma! Still a work in progress. You can find my sc
 
 ## June 16, 2023
 
-I've been working on migrating the original stack over to Fly.io. Originally, my setup was: SvelteKit + Supabase DB + Supabase Edge functions. Everything worked great and MVP was finished. But, there was one problem.
+I've been working on migrating the original stack over to Fly.io. Originally, my setup was: SvelteKit + Supabase DB (and its DB API) + Supabase Edge functions. Everything worked great and the MVP was finished. But, there was one problem.
 
 The Supabase edge function was triggered by a cron job every 5 minutes, and the edge function would fetch data from the HN API and insert it into the DB. After a few days, I checked on my usages and found that I had exceeded my free database egress limit! That prompted me to look for alternative solutions. And oddly, the database usage bar was also slowly increasing even though I was only updating rows at the time and not adding more to the table. I wish I had a screenshot to show the bright red warnings, but it was clear that using Supabase wasn't viable going forward (for freeness sake).
 
