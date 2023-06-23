@@ -9,7 +9,6 @@ export function formatDate(date: Date) {
   });
 }
 
-// There's a bug with the time stamp!
 export function getTimeAgo (date: Date) {
   const old = new Date(date);
   const now = new Date();
