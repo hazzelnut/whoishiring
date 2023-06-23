@@ -2,6 +2,7 @@ import { asc, desc, eq, sql, and } from "drizzle-orm";
 
 import db from "../db/client";
 import { Item, Story, StoryToTags } from "../db/schema";
+import { sanitize } from "./sanitize";
 
 
 export async function getLatestStory() {
@@ -36,18 +37,17 @@ export async function getJobs(url: URL) {
   const whereClause = [eq(Item.storyId, parseInt(storyId))]
 
   if (q) {
-    const arr = q.split(' ')
-    const query = arr.map(word => `'${word}'`).join(' <-> ');
-    console.log('query: ', query)
-    whereClause.push(sql`to_tsvector(${Item.htmlText}) @@ to_tsquery(${query})`)
+    const sanitizedInput = sanitize(q)
+    console.log('query: ', sanitizedInput)
+    whereClause.push(sql`to_tsvector(${Item.htmlText}) @@ to_tsquery(${sanitizedInput})`)
 
     // TODO: Index search but make it more accurate? .htmlText seems to get more results than .text
     // especially around slashes(/) words around slashes?
   }
 
   if (tags) {
-    const arr = tags.split(',');
-    const query = arr.map(word => `'${word}'`).join(' & ');
+    const sanitizedInput = sanitize(tags)
+    const query = sanitizedInput.split(',').join(' & ');
     console.log('tags: ', query)
     whereClause.push(sql`to_tsvector(${Item.htmlText}) @@ to_tsquery(${query})`)
   }
