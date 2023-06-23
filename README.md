@@ -4,12 +4,18 @@ I'm using SvelteKit to make this app!
 
 It takes all the job posts from the latest monthly HN 'Who is hiring' post, and delivers, I hope, a way better user interface.
 
+## June 23, 2023
+
+Cleaned up the design a bit more. Going to start off with some basic features and getting them to work really well before I add others. Some features I had in mind: Checking off posts as applied, a copy button to copy text of posts or all the posts, highlight the searched term or tagged term in the post itself, etc.
+
+<img width="906" alt="design step 2" src="https://github.com/hazzelnut/whoishiring/assets/6500879/2c55ed43-2074-470c-9c82-c168f498ddd4">
+
+
 ## June 21, 2023
 
 Started designing my site in Figma! Still a work in progress. You can find my scrapbook-like design board live in Figma [here](https://www.figma.com/file/6oFzUK7XW7ZraniN5Yu0so/whoishiring?type=design&node-id=0%3A1&t=o6l0XFyVDSyPRLKu-1).
 
 <img width="787" alt="design" src="https://github.com/hazzelnut/whoishiring/assets/6500879/4c387844-cb8a-47f6-af55-ff28ee534e80">
-
 
 ## June 16, 2023
 
