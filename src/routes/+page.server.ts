@@ -9,6 +9,9 @@ export const load = (async ({ url }) => {
     storyId = latestStory.id.toString()
   }
 
+  // BUG: When it reaches the 1st of the month, and the data hasn't been loaded this will result in no posts being
+  // shown to the user
+
   const { data: posts, count: totalCount } = await getJobs(url)
 
   return { posts, totalCount, storyId, startIndex: 0};
