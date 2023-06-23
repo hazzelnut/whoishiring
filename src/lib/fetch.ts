@@ -29,6 +29,10 @@ export async function getJobs(url: URL) {
     storyId = (latestStory.id).toString()
   }
 
+  // BUG: When it reaches the 1st of the month, and the data hasn't been loaded this will result in no posts being
+  // shown to the user
+  // Solution: Check if there's any items related to story, if not use a previous one?
+
   const whereClause = [eq(Item.storyId, parseInt(storyId))]
 
   if (q) {
