@@ -24,9 +24,6 @@ RUN apt-get update -qq && \
 COPY --link .npmrc package-lock.json package.json ./
 RUN npm ci --include=dev
 
-# Run DB migrations 
-RUN npm run migrate 
-
 # Copy application code
 COPY --link . .
 
@@ -41,6 +38,9 @@ FROM base
 
 # Copy built application
 COPY --from=build /app /app
+
+# Run DB migrations 
+RUN npm run migrate 
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
