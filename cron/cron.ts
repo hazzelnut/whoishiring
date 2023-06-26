@@ -32,6 +32,8 @@ const ingest = async () => {
   console.log(dataStats)
 }
 
+ingest()
+
 /* Runs every 5 minutes */
 
-cron.schedule("*/5 * * * *", ingest);
+//cron.schedule("*/5 * * * *", ingest);
