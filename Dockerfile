@@ -40,6 +40,12 @@ FROM base
 # Copy built application
 COPY --from=build /app /app
 
+# generate DB migration files
+CMD [ "npm", "run", "generate" ]
+
+# Run DB migration
+CMD [ "npm", "run", "migrate" ]
+
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
 CMD [ "npm", "run", "start" ]
