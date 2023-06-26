@@ -24,14 +24,14 @@ RUN apt-get update -qq && \
 COPY --link .npmrc package-lock.json package.json ./
 RUN npm ci --include=dev
 
+# Run DB migrations 
+RUN npm run migrate 
+
 # Copy application code
 COPY --link . .
 
 # Build application
 RUN npm run build
-
-# Run DB migrations 
-RUN npm run migrate 
 
 # Remove development dependencies
 RUN npm prune --omit=dev
