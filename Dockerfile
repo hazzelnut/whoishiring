@@ -30,21 +30,17 @@ COPY --link . .
 # Build application
 RUN npm run build
 
+# Run DB migrations 
+RUN npm run migrate 
+
 # Remove development dependencies
 RUN npm prune --omit=dev
-
 
 # Final stage for app image
 FROM base
 
 # Copy built application
 COPY --from=build /app /app
-
-# generate DB migration files
-CMD [ "npm", "run", "generate" ]
-
-# Run DB migration
-CMD [ "npm", "run", "migrate" ]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
