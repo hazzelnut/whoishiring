@@ -4,6 +4,8 @@ I'm using SvelteKit to make this app!
 
 It takes all the job posts from the latest monthly HN 'Who is hiring' post, and delivers, I hope, a way better user interface.
 
+Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev) and very much work in-progress.
+
 ## June 23, 2023
 
 Cleaned up the design a bit more. Going to start off with some basic features and getting them to work really well before I add others. Some features I had in mind: Checking off posts as applied, a copy button to copy text of posts or all the posts, highlight the searched term or tagged term in the post itself, etc.
