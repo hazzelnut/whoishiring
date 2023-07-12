@@ -6,6 +6,13 @@ It takes all the job posts from the latest monthly HN 'Who is hiring' post, and 
 
 Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev) and very much work in-progress.
 
+## July 11, 2023
+
+Took a little break, but I got back into desiging the mobile version of the site. Had to resize a few buttons and font size to fit all the content. This means I'll probably have to code these constraints in my CSS to adapt to a smaller screen. I used an iPhone 13 mini frame size as a reference to constrain my design choices to a smaller screen. It's also the phone that I have and I often find other sites not very well designed for it. So why not make my site work for my phone?
+
+<img width="224" alt="mobile design" src="https://github.com/hazzelnut/whoishiring/assets/6500879/3aaf8e7a-ceed-445d-9baa-52708f4e1d22">
+
+
 ## June 23, 2023
 
 Cleaned up the design a bit more. Going to start off with some basic features and getting them to work really well before I add others. Some features I had in mind: Checking off posts as applied, a copy button to copy text of posts or all the posts, highlight the searched term or tagged term in the post itself, etc.
