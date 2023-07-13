@@ -143,7 +143,7 @@
           bind:value={search}
         />
   
-        <button type="submit" class="search-submit">
+        <button type="submit" class="search-submit pointer">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
         </button>
   
@@ -151,12 +151,13 @@
             pressing 'enter' will target the nearest submit button -->
         <button
           type="submit"
-          class={`search-cancel ${search.length == 0 ? 'hide' : ''}`}
+          class={`search-cancel pointer ${search.length == 0 ? 'hide' : ''}`}
           tabindex="-1"
           on:click={() => search = ''}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
+          
       </div>
     </header>
 
@@ -298,12 +299,16 @@
     color: rgb(90, 188, 106);
   }
   button.hide {
+    z-index: -1;
     opacity: 0;
+  }
+  button.pointer {
+    cursor: pointer;
   }
 
   /* Search Bar */
   input[type="text"] {
-    padding: 1em;
+    padding: 1em 2.5em 1em 1em;
     border: 1px solid black;
     border-radius: 1em;
   }
@@ -326,9 +331,6 @@
     /* Resets */
     border: none;
     background: none;
-  }
-  div.search-container > button:hover {
-    cursor: pointer;
   }
 
   button.search-cancel {
