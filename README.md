@@ -6,9 +6,21 @@ It takes all the job posts from the latest monthly HN 'Who is hiring' post, and 
 
 Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev) and very much work in-progress.
 
+## July 23, 2023
+
+Implementing the 'save' feature was a bit tricky. Why? Here are few things I wanted to get right: 
+- The 'saved' jobs should persist in the browser; if the user navigates away and comes back later, it will still be there.
+- When 'un-saving' jobs in a 'show saved jobs' mode, the results should update accordingly
+
+Persisting saved jobs meant storing it in the browser. Cookies? No. I opted for localStorage instead becaues I'm reading the data client-side only and there's no expiry date with localStorage. I implemented this part using Svelte store. Using stores took a little while to understand, but it's mostly straightforward after that.
+
+Updating the number of results when 'un-saving' jobs in 'show saved jobs' mode was trickier. I still wanted the most up-to-date URL reflecting the results I'm getting when 'un-saving' jobs because I can copy-paste it and share it with others later. Implementing this part meant including the post components inside the `<form>`. I'm not sure if this is the best implementation, because a slow connections can make 'un-saving' jobs slow, but we will see!
+
+Here's a short vid to summarize what you can do with saving now. Also notice the URL changing when 'un-saving' jobs.
+
 ## July 11, 2023
 
-Took a little break, but I got back into desiging the mobile version of the site. Had to resize a few buttons and font size to fit all the content. This means I'll probably have to code these constraints in my CSS to adapt to a smaller screen. I used an iPhone 13 mini frame size as a reference to constrain my design choices to a smaller screen. It's also the phone that I have and I often find other sites not very well designed for it. So why not make my site work for my phone?
+Took a little break, but I got back into desiging the mobile version of the site. Had to resize a few buttons and font sizes to fit all the content. This means I'll probably have to code these constraints in CSS to adapt to a smaller screen. I used an iPhone 13 mini frame size as a reference to constrain my design choices to a smaller screen. But it's also the phone I have and I often find other sites not very well designed for it. So why not make my site work for my phone?
 
 <img width="224" alt="mobile design" src="https://github.com/hazzelnut/whoishiring/assets/6500879/3aaf8e7a-ceed-445d-9baa-52708f4e1d22">
 
