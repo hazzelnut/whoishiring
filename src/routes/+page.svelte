@@ -3,7 +3,8 @@
   import type { PageData } from './$types';
   import { htmlToText } from 'html-to-text';
 	import { browser } from '$app/environment';
-	import { onMount } from 'svelte';
+  import { savedJobs } from '$lib/stores';
+  import { onMount } from 'svelte';
 
   export let data: PageData;
   // NOTE: Destructuring didn't work until I used $:
@@ -25,7 +26,7 @@
   }
 
   /* Saved posts */
-  let savedPosts: Record<number, string>= {};
+  // let savedPosts: Record<number, string>= {};
   // Inferred by IDE
   type Post = {
 		  id: number;
@@ -35,48 +36,66 @@
       firebaseCreatedAt: Date;
   }
   function handleSave(post: Post) {
-    const text = 
-      `Posted: ${formatDate(post.firebaseCreatedAt)}` +
-      '<br/><br/>\n\n' +
-      `${post.htmlText}`;
-    
+    /* NOTE: Code for copying to clipboard */
+    // const text = 
+    //   `Posted: ${formatDate(post.firebaseCreatedAt)}` +
+    //   '<br/><br/>\n\n' +
+    //   `${post.htmlText}`;
 
-    if (Object.hasOwn(savedPosts, post.id)) {
-      const { [post.id]: _deletedPost, ...restPosts} = savedPosts
-      savedPosts = restPosts;
-    } else {
-      savedPosts = {...savedPosts, [post.id]: text}
+    if (storyId in $savedJobs) {
+      // Remove or Add to existing jobIds associated with storyId
+      const updatedJobs = $savedJobs[storyId].includes(post.id)
+        ? $savedJobs[storyId].filter(jobId => jobId !== post.id)
+        : [...$savedJobs[storyId], post.id];
+
+      savedJobs.update(saved => ({
+        ...saved,
+        [storyId]: updatedJobs,
+      }));
     }
+    else {
+      // Create a new storyId to jobIds key-value
+      savedJobs.set({[storyId]: [post.id]})
+    }
+    console.log(localStorage)
+
+    /* NOTE: Code for copying to clipboard */
+    // if (Object.hasOwn(savedPosts, post.id)) {
+    //   const { [post.id]: _deletedPost, ...restPosts} = savedPosts
+    //   savedPosts = restPosts;
+    // } else {
+    //   savedPosts = {...savedPosts, [post.id]: text}
+    // }
   }
 
   /* Copy to Clipboard */
-  async function setClipboard(html: string) {
-    const textType = "text/plain";
-    const htmlType = "text/html";
+  // async function setClipboard(html: string) {
+  //   const textType = "text/plain";
+  //   const htmlType = "text/html";
 
-    // TODO: refactor to not use htmlToText since I now have
-    //       htmlText and text fields 
+  //   // TODO: refactor to not use htmlToText since I now have
+  //   //       htmlText and text fields 
 
-    const htmlBlob = new Blob([html], { type: htmlType });
-    const textBlob = new Blob([htmlToText(html)], { type: textType });
+  //   const htmlBlob = new Blob([html], { type: htmlType });
+  //   const textBlob = new Blob([htmlToText(html)], { type: textType });
 
-    const data = [new ClipboardItem({ 
-      [textType]: textBlob,
-      [htmlType]: htmlBlob
-    })];
+  //   const data = [new ClipboardItem({ 
+  //     [textType]: textBlob,
+  //     [htmlType]: htmlBlob
+  //   })];
 
-    await navigator.clipboard.write(data);
-  }
+  //   await navigator.clipboard.write(data);
+  // }
 
-  async function copyAllPosts() {
-    let allPosts = '';
+  // async function copyAllPosts() {
+  //   let allPosts = '';
 
-    allPosts = Object
-      .values(savedPosts)
-      .join('<br/><br/>\n\n === <br/><br/>\n\n');
+  //   allPosts = Object
+  //     .values(savedPosts)
+  //     .join('<br/><br/>\n\n === <br/><br/>\n\n');
 
-    setClipboard(allPosts);
-  }
+  //   setClipboard(allPosts);
+  // }
 
   /* Fetch more posts */
   async function loadMoreJobs() {
@@ -111,6 +130,10 @@
       const url = new URL(window.location.href)
       const response = await fetch('/api/tags?' + url.searchParams.toString())
       tags = await response.json()
+
+
+      // TODO: A button to share saved jobs; basically copies url
+      // TODO: have a show all button next to results; reset the url
     }
   });
 
@@ -126,6 +149,13 @@
 
   /* Remote toggle */
   let remote = false
+
+  /* Saved Jobs */
+  let showSaved = false
+  $: numJobs = $savedJobs[storyId]?.length ?? 0 
+  $: if (numJobs == 0) {
+    showSaved = false
+  }
 
   /* Search Input */
   let search = ''
@@ -179,6 +209,12 @@
     <br />
     <button on:click={() => toggleSort()}>{sort}</button>
 
+    <br />
+    <button on:click={() => showSaved = !showSaved } disabled={numJobs == 0}>
+      ({numJobs}) saved only {showSaved}
+    </button>
+
+
     <!-- Use hidden input to send sort filter to URL -->
     <input
       type="hidden"
@@ -220,34 +256,40 @@
       />
     {/if}
 
+    <!-- Use hidden input to send saved jobs to URL -->
+    {#if showSaved}
+      <input
+        type="hidden"
+        name="savedJobs"
+        value={$savedJobs[storyId] ?? []}
+      />
+    {/if}
+
+
+
+    <p>{totalCount || 0} results</p>
+
+    {#each posts as post}
+      <div class="post">
+        <div class="postInfo">
+          <p>{post.by}</p>
+          <p class="timeAgo">{getTimeAgo(post.firebaseCreatedAt)}</p>
+        </div>
+        <p class="content">{@html post.htmlText}</p>
+        <button
+          class={
+            'saveBtn ' +
+            `${$savedJobs[storyId]?.includes(post.id) && "saved"}`
+          }
+          on:click={() => handleSave(post)}
+        >
+          {$savedJobs[storyId]?.includes(post.id) ? 'SAVED' : 'Save'}
+        </button>
+      </div>
+      <br />
+    {/each}
   </form>
 
-  <div class="savedStats">
-    <button on:click={() => copyAllPosts()}>Copy</button>
-    Saved Posts: {Object.keys(savedPosts).length}
-  </div>
-
-  <p>{totalCount || 0} results</p>
-
-  {#each posts as post}
-    <div class="post">
-      <div class="postInfo">
-        <p>{post.by}</p>
-        <p class="timeAgo">{getTimeAgo(post.firebaseCreatedAt)}</p>
-      </div>
-      <p class="content">{@html post.htmlText}</p>
-      <button
-        class={
-          'saveBtn ' +
-          `${Object.hasOwn(savedPosts, post.id) && "saved"}`
-        }
-        on:click={() => handleSave(post)}
-      >
-        {Object.hasOwn(savedPosts, post.id) ? 'SAVED' : 'Save'}
-      </button>
-    </div>
-    <br />
-  {/each}
   <footer bind:this={footer}>
     <small>Eric Chan, 2023</small>
   </footer>
@@ -268,9 +310,6 @@
     width: 8em;
   }
 
-  div.savedStats {
-    margin: 1em 0;
-  }
   div.post {
     position: relative;
     margin: 1em 0;

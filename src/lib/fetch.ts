@@ -1,4 +1,4 @@
-import { asc, desc, eq, sql, and } from "drizzle-orm";
+import { asc, desc, eq, sql, and, inArray } from "drizzle-orm";
 
 import db from "../db/client";
 import { Item, Story, StoryToTags } from "../db/schema";
@@ -23,6 +23,7 @@ export async function getJobs(url: URL) {
   const tags = url.searchParams.get('tags') || '';
   const startIndex = Number(url.searchParams.get('startIndex')) || 0
   const remote = url.searchParams.get('remote') || ''
+  const savedJobs = url.searchParams.get('savedJobs') || ''
 
   let storyId = url.searchParams.get('storyId');
   if (!storyId) {
@@ -54,6 +55,11 @@ export async function getJobs(url: URL) {
 
   if (remote === 'true') {
     whereClause.push(eq(Item.remote, true))
+  }
+
+  if (savedJobs) {
+    const jobIds = savedJobs.split(',').map(id => parseInt(id))
+    whereClause.push(inArray(Item.id, jobIds))
   }
 
   const data = await db.select({
