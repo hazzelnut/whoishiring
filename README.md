@@ -18,6 +18,12 @@ Updating the number of results when 'un-saving' jobs in 'show saved jobs' mode w
 
 Here's a short vid to summarize what you can do with saving now. Also notice the URL changing when 'un-saving' jobs.
 
+
+
+https://github.com/hazzelnut/whoishiring/assets/6500879/59b8bdd6-c90a-477f-a85c-2f4c9dc02dcf
+
+
+
 ## July 11, 2023
 
 Took a little break, but I got back into desiging the mobile version of the site. Had to resize a few buttons and font sizes to fit all the content. This means I'll probably have to code these constraints in CSS to adapt to a smaller screen. I used an iPhone 13 mini frame size as a reference to constrain my design choices to a smaller screen. But it's also the phone I have and I often find other sites not very well designed for it. So why not make my site work for my phone?
