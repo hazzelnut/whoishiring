@@ -162,6 +162,10 @@
 
 </script>
 
+<svelte:head>
+  <script defer data-domain="whoishiring-app.fly.dev" src="https://plausible.io/js/script.js"></script>
+</svelte:head>
+
 <main>
   <form data-sveltekit-noscroll>
     <header>
