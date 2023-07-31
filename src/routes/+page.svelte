@@ -18,7 +18,6 @@
   $: totalCount = data.totalCount
   $: storyId = data.storyId
 
-
   /* Sorting posts */
   let sort = 'newest';
   function toggleSort() {
@@ -163,7 +162,7 @@
 </script>
 
 <svelte:head>
-  <script defer data-domain="whoishiring-app.fly.dev" src="https://plausible.io/js/script.js"></script>
+  <script defer data-domain="whoishiring-app.fly.dev" src="/js/script.js"></script>
 </svelte:head>
 
 <main>
