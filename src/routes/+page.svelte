@@ -5,6 +5,7 @@
 	import { browser } from '$app/environment';
   import { savedJobs } from '$lib/stores';
   import { onMount } from 'svelte';
+	import Switch from '../components/Switch.svelte';
 
   export let data: PageData;
   // NOTE: Destructuring didn't work until I used $:
@@ -203,16 +204,15 @@
     <br />
 
     <!-- Buttons do a form submit without page refresh -->
-    <button on:click={() => remote = !remote}>Remote Only: {remote}</button>
+    <Switch click={() => toggleSort()} isSort toggle={sort == "newest"}>{sort}</Switch>
 
-    <br />
-    <button on:click={() => toggleSort()}>{sort}</button>
+    <Switch click={() => remote = !remote} toggle={remote}>
+        Remote only
+    </Switch>
 
-    <br />
-    <button on:click={() => showSaved = !showSaved } disabled={numJobs == 0}>
-      ({numJobs}) saved only {showSaved}
-    </button>
-
+    <Switch click={() => showSaved = !showSaved} toggle={showSaved} disabled={numJobs == 0}>
+      ({numJobs}) Saved only
+    </Switch>
 
     <!-- Use hidden input to send sort filter to URL -->
     <input
@@ -300,6 +300,9 @@
     padding: 1em;
 
     width: 64em;
+    color: #3F2F24;
+    /* TODO: Target body to be this background colour */
+    background-color: #F5F5F0;
   }
   p {
     word-wrap: break-word;
@@ -347,13 +350,14 @@
   /* Search Bar */
   input[type="text"] {
     padding: 1em 2.5em 1em 1em;
+    font-size: 1em;
+
     border: 1px solid black;
     border-radius: 1em;
   }
 
   header {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
     place-items: center;
     row-gap: 2em;
   }
