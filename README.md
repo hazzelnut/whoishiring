@@ -6,6 +6,29 @@ It takes all the job posts from the latest monthly HN 'Who is hiring' post, and 
 
 Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev) and very much work in-progress.
 
+## August 17, 2023
+Ahhh... sometimes starting a project is easy. But finishing it is the hardest.
+
+I've been on/off on this project. Life work gets in the way sometimes :/
+
+Thankfully, there's no real consequence on not completing this project on time ... aside from it affecting my own temperament 😅.
+
+For the most part, the logic is all finished. Right now it is about adding styles. Making the UI look pretty!
+
+I debated back and forth with using some UI framework. Mostly because I was feeling too lazy to implement the styles and logic associated with interactions. shadcn/ui was a contender. It's what all the cool kids are using nowadays. But, my designs aren't that complex. And CSS is relatively easy to write. Plus, my app will be ... less bloated? I guess that's cooler 😎
+
+So vanilla CSS and SVGs icons from scratch here we go...
+
+First, I decided to export my icon designs in Figma into SVGs. They looked relatively simple so why not?
+
+
+Next, I combined the SVG icons with some buttons, wrote some logic and CSS and here's what we it looks like!
+
+
+## July 30, 2023
+
+No graphic here but I added Plausible Analytics to my app. It's a privacy-friendly analytics tracker. Plus, it's open-source. I decided to give their free trial a try to see if it works well with my app. And if I want to use it for future apps that I build. We'll see!
+
 ## July 23, 2023
 
 Implementing the 'save' feature was a bit tricky. Why? Here are few things I wanted to get right: 
