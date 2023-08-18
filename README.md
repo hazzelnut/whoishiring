@@ -19,10 +19,16 @@ I debated back and forth with using some UI framework. Mostly because I was feel
 
 So vanilla CSS and SVGs icons from scratch here we go...
 
+
 First, I decided to export my icon designs in Figma into SVGs. They looked relatively simple so why not?
 
+<img width="737" alt="icon-svgs" src="https://github.com/hazzelnut/whoishiring/assets/6500879/e6cc2010-576c-4c86-acb5-0ff76db1a59a">
 
 Next, I combined the SVG icons with some buttons, wrote some logic and CSS and here's what we it looks like!
+
+
+https://github.com/hazzelnut/whoishiring/assets/6500879/934ad364-89e1-4d57-8088-439fdf8bdd8b
+
 
 
 ## July 30, 2023
