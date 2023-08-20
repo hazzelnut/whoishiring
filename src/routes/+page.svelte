@@ -5,6 +5,9 @@
 	import { browser } from '$app/environment';
   import { savedJobs } from '$lib/stores';
   import { onMount } from 'svelte';
+
+  import { page } from '$app/stores';
+
 	import Switch from '../components/button/Switch.svelte';
 	import Button from '../components/button/Button.svelte';
 	import Sort from '../components/button/Sort.svelte';
@@ -162,6 +165,10 @@
   /* Search Input */
   let search = ''
 
+  /* Changing url */
+  $:tagsUrl = $page.url.searchParams.get('tags')
+  $:qUrl = $page.url.searchParams.get('q')
+
 </script>
 
 <main>
@@ -174,21 +181,22 @@
           placeholder="Search..."
           bind:value={search}
         />
-  
+
         <button type="submit" class="search-submit pointer">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
         </button>
+
+        {#if qUrl != null}
+          <button
+            class={`search-cancel pointer`}
+            on:click={() => search = ''}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        {/if}
   
         <!-- Note: Order of reset button and submit button matters here; 
             pressing 'enter' will target the nearest submit button -->
-        <button
-          type="submit"
-          class={`search-cancel pointer ${search.length == 0 ? 'hide' : ''}`}
-          tabindex="-1"
-          on:click={() => search = ''}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
           
       </div>
     </header>
@@ -197,7 +205,9 @@
     <br />
     {#if tags.length > 0}
       <span>Popular filters:</span>
-      <button on:click={() => tagsToFilter = []}>Reset filters</button>
+      {#if tagsUrl != null }
+        <Button click={() => tagsToFilter = []}>Reset filters</Button> {/if}
+      <br />
       {#each tags as tag}
         <Button toggle={tagsToFilter.includes(tag)} click={() => handleTags(tag)}>{tag}</Button>
       {/each}
@@ -340,10 +350,6 @@
   button.saved {
     font-weight: bolder;
     color: rgb(90, 188, 106);
-  }
-  button.hide {
-    z-index: -1;
-    opacity: 0;
   }
   button.pointer {
     cursor: pointer;
