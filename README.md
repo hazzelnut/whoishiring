@@ -10,6 +10,7 @@ Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.de
 
 Time to style the list of filters so they look extra nice 💅. 
 
+https://github.com/hazzelnut/whoishiring/assets/6500879/04ffbb28-5f87-4db2-b72e-c00dae604d2a
 
 ## August 17, 2023
 Ahhh... sometimes starting a project is easy. But finishing it is the hardest.
