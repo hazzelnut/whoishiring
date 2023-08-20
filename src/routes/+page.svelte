@@ -206,13 +206,19 @@
       <div class="border-top pv-1">
         <div class="flex-and-row-wrap gap-half v-center min-h-4 mb-05">
           <span>Popular filters:</span>
-          {#if tagsParam != null }
+          {#if tagsToFilter.length > 0 || tagsParam != null}
             <Button click={() => tagsToFilter = []}>Reset filters</Button>
           {/if}
         </div>
         <div class="tags-container flex-and-row-wrap gap-half">
           {#each tags as tag}
-            <div><Button toggle={tagsParam?.includes(tag)} click={() => handleTags(tag)}>{tag}</Button></div>
+            <div>
+              <Button
+                toggle={tagsToFilter.includes(tag) || tagsParam?.includes(tag)}
+                click={() => handleTags(tag)}>
+                  {tag}
+              </Button>
+            </div>
           {/each}
         </div>
       </div>
