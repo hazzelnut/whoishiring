@@ -208,7 +208,7 @@
             <Button click={() => tagsToFilter = []}>Reset filters</Button>
           {/if}
         </div>
-        <div>
+        <div class="tags-list-container">
           {#each tags as tag}
             <Button toggle={tagsToFilter.includes(tag)} click={() => handleTags(tag)}>{tag}</Button>
           {/each}
@@ -331,10 +331,18 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 0.5em;
 
-    padding: 1em 0;
+    padding: 0.5em 0;
     align-items: center;
     min-height: 4em;
+  }
+
+  div.tags-list-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5em;
   }
 
   div.post {
