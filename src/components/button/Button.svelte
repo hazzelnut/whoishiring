@@ -2,12 +2,14 @@
   export let disabled = false;
   export let click = () => {};
   export let toggle = false;
-  export let classAtr = ''; 
+
+  let className = ''; 
+  export { className as class }
 </script>
 
 
 <button
-  class={`${classAtr} ${toggle ? 'active': ''} ${disabled ? 'disabled': ''}`}
+  class={`${className} ${toggle ? 'active': ''} ${disabled ? 'disabled': ''}`}
   on:click={() => click()}
   disabled={disabled}
 >

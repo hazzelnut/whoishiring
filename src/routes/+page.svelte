@@ -187,10 +187,7 @@
         </button>
 
         {#if qUrl != null}
-          <button
-            class={`search-cancel pointer`}
-            on:click={() => search = ''}
-          >
+          <button class={`search-cancel pointer`} on:click={() => search = ''}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         {/if}
@@ -204,13 +201,19 @@
 
     <br />
     {#if tags.length > 0}
-      <span>Popular filters:</span>
-      {#if tagsUrl != null }
-        <Button click={() => tagsToFilter = []}>Reset filters</Button> {/if}
-      <br />
-      {#each tags as tag}
-        <Button toggle={tagsToFilter.includes(tag)} click={() => handleTags(tag)}>{tag}</Button>
-      {/each}
+      <div>
+        <div class="tags-reset-container">
+          <span>Popular filters:</span>
+          {#if tagsUrl != null }
+            <Button click={() => tagsToFilter = []}>Reset filters</Button>
+          {/if}
+        </div>
+        <div>
+          {#each tags as tag}
+            <Button toggle={tagsToFilter.includes(tag)} click={() => handleTags(tag)}>{tag}</Button>
+          {/each}
+        </div>
+      </div>
     {/if}
 
     <br />
@@ -322,6 +325,16 @@
   button {
     height: 4em;
     width: 8em;
+  }
+
+  div.tags-reset-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    padding: 1em 0;
+    align-items: center;
+    min-height: 4em;
   }
 
   div.post {
