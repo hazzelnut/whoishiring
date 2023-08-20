@@ -1,0 +1,24 @@
+<script lang="ts">
+	import Button from "./Button.svelte";
+
+  export let disabled = false;
+  export let toggle = false;
+  export let click = () => {};
+</script>
+
+
+<Button click={click} toggle={toggle} disabled={disabled}>
+  <slot></slot>
+
+  {#if toggle}
+    <svg width="45" height="20" viewBox="0 0 45 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="-0.5" y="0.5" width="44" height="19" rx="9.5" transform="matrix(-1 0 0 1 44 0)" fill="#3F2F24" stroke="#F5F5F0"/>
+    <circle cx="8" cy="8" r="8" transform="matrix(-1 0 0 1 43 2)" fill="#F5F5F0"/>
+    </svg>
+  {:else}
+    <svg width="45" height="20" viewBox="0 0 45 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0.5" y="0.5" width="44" height="19" rx="9.5" fill="#F5F5F0" stroke="#3F2F24"/>
+    <circle cx="10" cy="10" r="8" fill="#3F2F24"/>
+    </svg>
+  {/if}
+</Button>

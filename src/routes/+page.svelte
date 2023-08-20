@@ -5,7 +5,9 @@
 	import { browser } from '$app/environment';
   import { savedJobs } from '$lib/stores';
   import { onMount } from 'svelte';
-	import Switch from '../components/Switch.svelte';
+	import Switch from '../components/button/Switch.svelte';
+	import Button from '../components/button/Button.svelte';
+	import Sort from '../components/button/Sort.svelte';
 
   export let data: PageData;
   // NOTE: Destructuring didn't work until I used $:
@@ -197,14 +199,14 @@
       <span>Popular filters:</span>
       <button on:click={() => tagsToFilter = []}>Reset filters</button>
       {#each tags as tag}
-        <button on:click={() => handleTags(tag)}>{tag}</button>
+        <Button toggle={tagsToFilter.includes(tag)} click={() => handleTags(tag)}>{tag}</Button>
       {/each}
     {/if}
 
     <br />
 
     <!-- Buttons do a form submit without page refresh -->
-    <Switch click={() => toggleSort()} isSort toggle={sort == "newest"}>{sort}</Switch>
+    <Sort click={() => toggleSort()} toggle={sort == "newest"}>{sort}</Sort>
 
     <Switch click={() => remote = !remote} toggle={remote}>
         Remote only
