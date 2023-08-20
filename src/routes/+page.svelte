@@ -79,12 +79,12 @@
   //   const htmlType = "text/html";
 
   //   // TODO: refactor to not use htmlToText since I now have
-  //   //       htmlText and text fields 
+  //   //       htmlText and text fields
 
   //   const htmlBlob = new Blob([html], { type: htmlType });
   //   const textBlob = new Blob([htmlToText(html)], { type: textType });
 
-  //   const data = [new ClipboardItem({ 
+  //   const data = [new ClipboardItem({
   //     [textType]: textBlob,
   //     [htmlType]: htmlBlob
   //   })];
@@ -157,7 +157,7 @@
 
   /* Saved Jobs */
   let showSaved = false
-  $: numJobs = $savedJobs[storyId]?.length ?? 0 
+  $: numJobs = $savedJobs[storyId]?.length ?? 0
   $: if (numJobs == 0) {
     showSaved = false
   }
@@ -166,8 +166,11 @@
   let search = ''
 
   /* Changing url */
-  $:tagsUrl = $page.url.searchParams.get('tags')
-  $:qUrl = $page.url.searchParams.get('q')
+  $:tagsParam = ($page.url.searchParams.get('tags'))?.split(',')
+  $:qParam = $page.url.searchParams.get('q')
+  $:remoteParam = $page.url.searchParams.get('remote')
+  $:savedParam = $page.url.searchParams.get('savedJobs')
+  $:sortParam = $page.url.searchParams.get('sort')
 
 </script>
 
@@ -186,48 +189,48 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
         </button>
 
-        {#if qUrl != null}
+        {#if qParam != null}
           <button class={`search-cancel pointer`} on:click={() => search = ''}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         {/if}
-  
-        <!-- Note: Order of reset button and submit button matters here; 
+
+        <!-- Note: Order of reset button and submit button matters here;
             pressing 'enter' will target the nearest submit button -->
-          
+
       </div>
     </header>
 
 
-    <br />
     {#if tags.length > 0}
-      <div>
-        <div class="tags-reset-container">
+      <div class="border-top pv-1">
+        <div class="flex-and-row-wrap gap-half v-center min-h-4 mb-05">
           <span>Popular filters:</span>
-          {#if tagsUrl != null }
+          {#if tagsParam != null }
             <Button click={() => tagsToFilter = []}>Reset filters</Button>
           {/if}
         </div>
-        <div class="tags-list-container">
+        <div class="tags-container flex-and-row-wrap gap-half">
           {#each tags as tag}
-            <Button toggle={tagsToFilter.includes(tag)} click={() => handleTags(tag)}>{tag}</Button>
+            <div><Button toggle={tagsParam?.includes(tag)} click={() => handleTags(tag)}>{tag}</Button></div>
           {/each}
         </div>
       </div>
     {/if}
 
-    <br />
-
     <!-- Buttons do a form submit without page refresh -->
-    <Sort click={() => toggleSort()} toggle={sort == "newest"}>{sort}</Sort>
+    <div class="flex-and-row-wrap gap-half pv-1 border-top">
+      <Sort click={() => toggleSort()} toggle={sortParam?.includes('newest')}>{sortParam || sort}</Sort>
 
-    <Switch click={() => remote = !remote} toggle={remote}>
-        Remote only
-    </Switch>
+      <Switch click={() => remote = !remote} toggle={remoteParam != null}>
+          Remote only
+      </Switch>
 
-    <Switch click={() => showSaved = !showSaved} toggle={showSaved} disabled={numJobs == 0}>
-      ({numJobs}) Saved only
-    </Switch>
+      <Switch click={() => showSaved = !showSaved} toggle={savedParam != null} disabled={numJobs == 0}>
+        ({numJobs}) Saved only
+      </Switch>
+    </div>
+
 
     <!-- Use hidden input to send sort filter to URL -->
     <input
@@ -281,7 +284,7 @@
 
 
 
-    <p>{totalCount || 0} results</p>
+    <div class="border-top pv-1">{totalCount || 0} results</div>
 
     {#each posts as post}
       <div class="post">
@@ -327,23 +330,41 @@
     width: 8em;
   }
 
-  div.tags-reset-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5em;
-
-    padding: 0.5em 0;
-    align-items: center;
-    min-height: 4em;
-  }
-
-  div.tags-list-container {
+  /* Mini utility-classes */
+  .flex-and-row-wrap {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .gap-half {
     gap: 0.5em;
   }
+
+  .pv-1 {
+    padding: 1em 0;
+  }
+
+  .pv-05 {
+    padding: 0.5em 0;
+  }
+
+  .mb-05 {
+    margin-bottom: 0.5em
+  }
+
+  .v-center {
+    align-items: center;
+  }
+
+  .min-h-4 {
+    min-height: 4em;
+  }
+
+  .border-top {
+    border-top: 1px solid #3F2F24;
+  }
+
 
   div.post {
     position: relative;
@@ -430,6 +451,11 @@
     main {
       margin: 0;
       width: auto;
+    }
+
+    /* Show less tags in mobile view */
+    .tags-container > :nth-child(n + 13){
+      display: none;
     }
   }
 </style>

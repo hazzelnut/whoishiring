@@ -8,7 +8,9 @@
 
 
 <Button click={click} disabled={disabled}>
-  <slot></slot>
+  <div class="text">
+    <slot></slot>
+  </div>
 
   {#if toggle}
     <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -28,5 +30,9 @@
   */
   svg {
     pointer-events: none;
+  }
+
+  div.text {
+    min-width: 3.5em;
   }
 </style>
