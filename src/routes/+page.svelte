@@ -299,15 +299,14 @@
           <p class="timeAgo">{getTimeAgo(post.firebaseCreatedAt)}</p>
         </div>
         <p class="content">{@html post.htmlText}</p>
-        <button
-          class={
-            'saveBtn ' +
-            `${$savedJobs[storyId]?.includes(post.id) && "saved"}`
-          }
-          on:click={() => handleSave(post)}
-        >
-          {$savedJobs[storyId]?.includes(post.id) ? 'SAVED' : 'Save'}
-        </button>
+        <div class="top-right-absolute">
+          <Button
+            toggle={$savedJobs[storyId]?.includes(post.id)}
+            click={() => handleSave(post)}
+          >
+            {$savedJobs[storyId]?.includes(post.id) ? 'saved' : 'save'}
+          </Button>
+        </div>
       </div>
       <br />
     {/each}
@@ -371,6 +370,11 @@
     border-top: 1px solid #3F2F24;
   }
 
+  .top-right-absolute {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+  }
 
   div.post {
     position: relative;
@@ -390,18 +394,6 @@
     overflow-y: hidden;
   }
 
-  button.saveBtn {
-    position: absolute;
-    top: 1em;
-    right: 1em;
-  }
-  button.saved {
-    font-weight: bolder;
-    color: rgb(90, 188, 106);
-  }
-  button.pointer {
-    cursor: pointer;
-  }
 
   /* Search Bar */
   input[type="text"] {
