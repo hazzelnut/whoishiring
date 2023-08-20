@@ -22,3 +22,13 @@
     </svg>
   {/if}
 </Button>
+
+<style>
+  /* Bug: On mobile, tapping on SVG doesn't execute
+          the button click to submit form to server.
+          Setting pointer-events: none fixes it.
+  */
+  svg {
+    pointer-events: none;
+  }
+</style>
