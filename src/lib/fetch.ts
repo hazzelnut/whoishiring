@@ -68,6 +68,7 @@ export async function getJobs(url: URL) {
                           text: Item.text,
                           htmlText: Item.htmlText,
                           firebaseCreatedAt: Item.firebaseCreatedAt,
+                          firebaseId: Item.firebaseId,
                         })
                         .from(Item)
                         .where(and(...whereClause))

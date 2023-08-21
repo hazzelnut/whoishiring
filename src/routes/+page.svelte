@@ -11,6 +11,7 @@
 	import Switch from '../components/button/Switch.svelte';
 	import Button from '../components/button/Button.svelte';
 	import Sort from '../components/button/Sort.svelte';
+	import Post from '../components/post/Post.svelte';
 
   export let data: PageData;
   // NOTE: Destructuring didn't work until I used $:
@@ -29,78 +30,6 @@
   function toggleSort() {
     sort = sort === 'oldest' ? 'newest' : 'oldest'
   }
-
-  /* Saved posts */
-  // let savedPosts: Record<number, string>= {};
-  // Inferred by IDE
-  type Post = {
-		  id: number;
-      by: string;
-      text: string;
-      htmlText: string;
-      firebaseCreatedAt: Date;
-  }
-  function handleSave(post: Post) {
-    /* NOTE: Code for copying to clipboard */
-    // const text = 
-    //   `Posted: ${formatDate(post.firebaseCreatedAt)}` +
-    //   '<br/><br/>\n\n' +
-    //   `${post.htmlText}`;
-
-    if (storyId in $savedJobs) {
-      // Remove or Add to existing jobIds associated with storyId
-      const updatedJobs = $savedJobs[storyId].includes(post.id)
-        ? $savedJobs[storyId].filter(jobId => jobId !== post.id)
-        : [...$savedJobs[storyId], post.id];
-
-      savedJobs.update(saved => ({
-        ...saved,
-        [storyId]: updatedJobs,
-      }));
-    }
-    else {
-      // Create a new storyId to jobIds key-value
-      savedJobs.set({[storyId]: [post.id]})
-    }
-    console.log(localStorage)
-
-    /* NOTE: Code for copying to clipboard */
-    // if (Object.hasOwn(savedPosts, post.id)) {
-    //   const { [post.id]: _deletedPost, ...restPosts} = savedPosts
-    //   savedPosts = restPosts;
-    // } else {
-    //   savedPosts = {...savedPosts, [post.id]: text}
-    // }
-  }
-
-  /* Copy to Clipboard */
-  // async function setClipboard(html: string) {
-  //   const textType = "text/plain";
-  //   const htmlType = "text/html";
-
-  //   // TODO: refactor to not use htmlToText since I now have
-  //   //       htmlText and text fields
-
-  //   const htmlBlob = new Blob([html], { type: htmlType });
-  //   const textBlob = new Blob([htmlToText(html)], { type: textType });
-
-  //   const data = [new ClipboardItem({
-  //     [textType]: textBlob,
-  //     [htmlType]: htmlBlob
-  //   })];
-
-  //   await navigator.clipboard.write(data);
-  // }
-
-  // async function copyAllPosts() {
-  //   let allPosts = '';
-
-  //   allPosts = Object
-  //     .values(savedPosts)
-  //     .join('<br/><br/>\n\n === <br/><br/>\n\n');
-
-  //   setClipboard(allPosts);
-  // }
 
   /* Fetch more posts */
   async function loadMoreJobs() {
@@ -293,21 +222,7 @@
     <div class="border-top pv-1">{totalCount || 0} results</div>
 
     {#each posts as post}
-      <div class="post">
-        <div class="postInfo">
-          <p>{post.by}</p>
-          <p class="timeAgo">{getTimeAgo(post.firebaseCreatedAt)}</p>
-        </div>
-        <p class="content">{@html post.htmlText}</p>
-        <div class="top-right-absolute">
-          <Button
-            toggle={$savedJobs[storyId]?.includes(post.id)}
-            click={() => handleSave(post)}
-          >
-            {$savedJobs[storyId]?.includes(post.id) ? 'saved' : 'save'}
-          </Button>
-        </div>
-      </div>
+      <Post post={post} storyId={storyId} />
       <br />
     {/each}
   </form>
@@ -370,29 +285,6 @@
     border-top: 1px solid #3F2F24;
   }
 
-  .top-right-absolute {
-    position: absolute;
-    top: 1em;
-    right: 1em;
-  }
-
-  div.post {
-    position: relative;
-    margin: 1em 0;
-    padding: 1em;
-    border: 1px solid black;
-    border-radius: 1em;
-  }
-  div.postInfo{
-    font-weight: bold;
-  }
-  p.timeAgo {
-    color: rgb(77, 163, 183);
-  }
-  p.content {
-    /* NOTE: Fix for horizonal scrolling? */
-    overflow-y: hidden;
-  }
 
 
   /* Search Bar */
