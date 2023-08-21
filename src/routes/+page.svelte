@@ -105,10 +105,11 @@
 
 <main>
   <form data-sveltekit-noscroll>
-    <header>
+    <header class="pv-1">
       <span>Whoishiring</span>
       <div class="search-container">
         <input
+          class="search-input"
           type="text"
           placeholder="Search..."
           bind:value={search}
@@ -118,12 +119,11 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
         </button>
 
-        {#if qParam != null}
+        {#if search.length > 0 || qParam != null}
           <button class={`search-cancel pointer`} on:click={() => search = ''}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         {/if}
-
         <!-- Note: Order of reset button and submit button matters here;
             pressing 'enter' will target the nearest submit button -->
 
@@ -237,7 +237,6 @@
     margin: 0 auto;
     padding: 1em;
 
-    width: 64em;
     color: #3F2F24;
     /* TODO: Target body to be this background colour */
     background-color: #F5F5F0;
@@ -307,6 +306,7 @@
 
     display: flex;
     align-items: center;
+
   }
 
   div.search-container > button {
@@ -336,11 +336,19 @@
   button.search-submit > svg {
     fill: #64748b;
   }
+  .search-input {
+    background-color: #FAFAF4;
+  }
 
-  @media (max-width: 960px) {
+  @media (min-width: 64em) {
     main {
-      margin: 0;
-      width: auto;
+      width: 64em;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .search-container, .search-input {
+      width: 100%;
     }
 
     /* Show less tags in mobile view */
