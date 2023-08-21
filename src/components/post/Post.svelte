@@ -74,6 +74,8 @@
     gap: 1em;
   }
   p.content {
+    line-height: 1.5;
+
     /* NOTE: Fix for horizonal scrolling? */
     overflow-y: hidden;
   }
