@@ -285,6 +285,9 @@
   }
 
 
+  .pointer {
+    cursor: pointer;
+  }
 
   /* Search Bar */
   input[type="text"] {
@@ -311,16 +314,17 @@
 
   div.search-container > button {
     /* Resets */
-    border: none;
     background: none;
   }
 
   button.search-cancel {
     position: absolute;
-    right: 0em;
+    right: 3.5em;
 
     height:  3em;
     width:  3em;
+
+    border: none;
   }
   button.search-cancel > svg {
     stroke: #64748b;
@@ -328,16 +332,20 @@
 
   button.search-submit {
     position: absolute;
-    right: -3.0em;
+    right: 0.5em;
 
     height:  3em;
     width:  3em;
+
+    border-style: solid;
+    border-color: #3F2F24;
+    border-width: 0 0 0 1px;
   }
   button.search-submit > svg {
     fill: #64748b;
   }
   .search-input {
-    background-color: #FAFAF4;
+    background-color: #ffffed;
   }
 
   @media (min-width: 64em) {
