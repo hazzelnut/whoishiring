@@ -115,17 +115,17 @@
           bind:value={search}
         />
 
+        <!-- Note: Order of reset button and submit button matters here;
+            pressing 'enter' will target the nearest submit button -->
         <button type="submit" class="search-submit pointer">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
         </button>
 
         {#if search.length > 0 || qParam != null}
           <button class={`search-cancel pointer`} on:click={() => search = ''}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         {/if}
-        <!-- Note: Order of reset button and submit button matters here;
-            pressing 'enter' will target the nearest submit button -->
 
       </div>
     </header>
@@ -192,7 +192,7 @@
 
     <!-- Use hidden input to send tags info in URL -->
     {#if tagsToFilter.length > 0}
-      <input 
+      <input
         type="hidden"
         name="tags"
         value={tagsToFilter}
@@ -216,8 +216,6 @@
         value={$savedJobs[storyId] ?? []}
       />
     {/if}
-
-
 
     <div class="border-top pv-1">{totalCount || 0} results</div>
 
@@ -287,13 +285,6 @@
   }
 
   /* Search Bar */
-  input[type="text"] {
-    padding: 1em 2.5em 1em 1em;
-    font-size: 1em;
-
-    border: 1px solid black;
-    border-radius: 1em;
-  }
 
   header {
     display: grid;
@@ -307,6 +298,9 @@
     display: flex;
     align-items: center;
 
+    border: 1px solid #3F2F24;
+    border-radius: 1em;
+    background-color: #ffffed;
   }
 
   div.search-container > button {
@@ -314,36 +308,49 @@
     background: none;
   }
 
-  button.search-cancel {
-    position: absolute;
-    right: 3.5em;
 
-    height:  3em;
-    width:  3em;
+  input.search-input {
+    padding: 1em 5em 1em 1em;
+    font-size: 1em;
 
     border: none;
+    background: none;
+    border-radius: 1em;
   }
-  button.search-cancel > svg {
-    stroke: #64748b;
+  button.search-cancel {
+    position: absolute;
+    right: 4.5em;
+
+    height: 2.5em;
+    width: 3em;
+
+    border: none;
   }
 
   button.search-submit {
     position: absolute;
-    right: 0.5em;
+    right: 0;
 
-    height:  3em;
-    width:  3em;
+    height: 2.5em;
+    width: 4em;
 
     border-style: solid;
     border-color: #3F2F24;
     border-width: 0 0 0 1px;
   }
-  button.search-submit > svg {
-    fill: #64748b;
+
+  .search-cancel svg {
+    width: 2em;
+    height: 2em;
+    stroke:#3F2F24;
   }
-  .search-input {
-    background-color: #ffffed;
+  .search-submit svg {
+    width: 2em;
+    height: 2em;
+    fill: #3F2F24;
   }
+
+
 
   @media (min-width: 64em) {
     main {
