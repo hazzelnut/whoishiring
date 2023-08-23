@@ -6,6 +6,11 @@ It takes all the job posts from the latest monthly HN 'Who is hiring' post, and 
 
 Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev) and very much work in-progress.
 
+## August 22, 2023
+
+Styling the search bar, the filters, and making the site responsive 😎
+
+
 ## August 19, 2023
 
 Time to style the list of filters so they look extra nice 💅. 
