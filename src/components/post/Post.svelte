@@ -42,21 +42,25 @@
         {getTimeAgo(post.firebaseCreatedAt)}
       </a>
     </p>
+    <div class="ml-auto">
+      <Button
+        toggle={$savedJobs[storyId]?.includes(post.id)}
+        click={() => handleSave(post)}
+      >
+        {$savedJobs[storyId]?.includes(post.id) ? 'saved' : 'save'}
+      </Button>
+    </div>
   </div>
   <p class="content">{@html post.htmlText}</p>
-  <div class="top-right-absolute">
-    <Button
-      toggle={$savedJobs[storyId]?.includes(post.id)}
-      click={() => handleSave(post)}
-    >
-      {$savedJobs[storyId]?.includes(post.id) ? 'saved' : 'save'}
-    </Button>
-  </div>
 </div>
 
 <style>
   .bold {
     font-weight: bold;
+  }
+
+  .ml-auto {
+    margin-left: auto;
   }
 
   div.post {
@@ -80,9 +84,5 @@
     overflow-y: hidden;
   }
 
-  .top-right-absolute {
-    position: absolute;
-    top: 1em;
-    right: 1em;
-  }
+
 </style>

@@ -241,9 +241,6 @@
     /* TODO: Target body to be this background colour */
     background-color: #F5F5F0;
   }
-  p {
-    word-wrap: break-word;
-  }
   button {
     height: 4em;
     width: 8em;
