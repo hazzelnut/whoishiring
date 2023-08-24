@@ -11,6 +11,7 @@
 	import Switch from '../components/button/Switch.svelte';
 	import Button from '../components/button/Button.svelte';
 	import Sort from '../components/button/Sort.svelte';
+	import Reset from '../components/button/Reset.svelte';
 	import Post from '../components/post/Post.svelte';
 
   export let data: PageData;
@@ -122,7 +123,7 @@
         </button>
 
         {#if search.length > 0 || qParam != null}
-          <button class={`search-cancel pointer`} on:click={() => search = ''}>
+          <button class="search-cancel pointer" on:click={() => search = ''}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         {/if}
@@ -136,7 +137,7 @@
         <div class="flex-and-row-wrap gap-half v-center min-h-4 mb-05">
           <span>Popular filters:</span>
           {#if tagsToFilter.length > 0 || tagsParam != null}
-            <Button click={() => tagsToFilter = []}>Reset filters</Button>
+            <Reset click={() => tagsToFilter = []}>Reset</Reset>
           {/if}
         </div>
         <div class="tags-container flex-and-row-wrap gap-half">
@@ -342,7 +343,7 @@
   .search-cancel svg {
     width: 2em;
     height: 2em;
-    stroke:#3F2F24;
+    stroke: #3F2F24;
   }
   .search-submit svg {
     width: 2em;
@@ -350,8 +351,7 @@
     fill: #3F2F24;
   }
 
-
-
+  /* Restrict width in desktop view */
   @media (min-width: 64em) {
     main {
       width: 64em;
