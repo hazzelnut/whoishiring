@@ -65,10 +65,6 @@
       const url = new URL(window.location.href)
       const response = await fetch('/api/tags?' + url.searchParams.toString())
       tags = await response.json()
-
-
-      // TODO: A button to share saved jobs; basically copies url
-      // TODO: have a show all button next to results; reset the url
     }
   });
 
@@ -106,8 +102,12 @@
 
 <main>
   <form data-sveltekit-noscroll>
-    <header class="pv-1">
-      <span>Whoishiring</span>
+    <header class="pt-1">
+      <span class="logo">
+        <a href="https://news.ycombinator.com/submitted?id=whoishiring" target="_blank">
+          whoishiring
+        </a>
+      </span>
       <div class="search-container">
         <input
           class="search-input"
@@ -133,11 +133,11 @@
 
 
     {#if tags.length > 0}
-      <div class="border-top pv-1">
-        <div class="flex-and-row-wrap gap-half v-center min-h-4 mb-05">
-          <span>Popular filters:</span>
+      <div class="pv-1">
+        <div class="flex-and-row-wrap gap-half v-center min-h-4">
+          <span class="heading wavy">Popular Filters</span>
           {#if tagsToFilter.length > 0 || tagsParam != null}
-            <Reset click={() => tagsToFilter = []}>Reset</Reset>
+            <Reset click={() => tagsToFilter = []}>reset</Reset>
           {/if}
         </div>
         <div class="tags-container flex-and-row-wrap gap-half">
@@ -155,15 +155,15 @@
     {/if}
 
     <!-- Buttons do a form submit without page refresh -->
-    <div class="flex-and-row-wrap gap-half pv-1 border-top">
+    <div class="flex-and-row-wrap gap-half pv-1">
       <Sort click={() => toggleSort()} toggle={sortParam?.includes('newest')}>{sortParam || sort}</Sort>
 
       <Switch click={() => remote = !remote} toggle={remoteParam != null}>
-          Remote only
+          remote only
       </Switch>
 
       <Switch click={() => showSaved = !showSaved} toggle={savedParam != null} disabled={numJobs == 0}>
-        ({numJobs}) Saved only
+        ({numJobs}) saved only
       </Switch>
     </div>
 
@@ -218,11 +218,10 @@
       />
     {/if}
 
-    <div class="border-top pv-1">{totalCount || 0} results</div>
+    <div class="heading border-top pt-1">{totalCount || 0} results</div>
 
     {#each posts as post}
       <Post post={post} storyId={storyId} />
-      <br />
     {/each}
   </form>
 
@@ -236,13 +235,25 @@
     margin: 0 auto;
     padding: 1em;
 
-    color: #3F2F24;
-    /* TODO: Target body to be this background colour */
-    background-color: #F5F5F0;
+    color: #231F20;
+    background-color: #F9F5EB;
+    border-radius: 1em;
   }
   button {
     height: 4em;
     width: 8em;
+  }
+
+  .logo {
+    font-weight: bolder;
+    font-size: 2em;
+    font-family: 'Unbounded', sans-serif;
+  }
+  .logo > a {
+    text-decoration: none;
+  }
+  .logo > a:visited, .logo > a:link {
+    color: #231F20;
   }
 
   /* Mini utility-classes */
@@ -260,12 +271,8 @@
     padding: 1em 0;
   }
 
-  .pv-05 {
-    padding: 0.5em 0;
-  }
-
-  .mb-05 {
-    margin-bottom: 0.5em
+  .pt-1 {
+    padding-top: 1em;
   }
 
   .v-center {
@@ -277,20 +284,34 @@
   }
 
   .border-top {
-    border-top: 1px solid #3F2F24;
+    border-top: 1px solid #231F20;
   }
-
 
   .pointer {
     cursor: pointer;
+  }
+
+  .heading {
+    font-size: 1.2em;
+    font-weight: bolder;
+  }
+
+  .wavy {
+    text-decoration: underline wavy #4E7539;
+    text-underline-offset: 0.5em;
+
+    -webkit-text-decoration: underline wavy #4E7539;
+    -webkit-text-underline-line: 0.5em;
   }
 
   /* Search Bar */
 
   header {
     display: grid;
-    place-items: center;
-    row-gap: 2em;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    row-gap: 1em;
+    column-gap: 1em;
   }
 
   div.search-container {
@@ -299,9 +320,11 @@
     display: flex;
     align-items: center;
 
-    border: 1px solid #3F2F24;
+    border: 1px solid #231F20;
     border-radius: 1em;
-    background-color: #ffffed;
+    background-color: #FCFAF4;
+
+    grid-column: 3/3;
   }
 
   div.search-container > button {
@@ -336,19 +359,19 @@
     width: 4em;
 
     border-style: solid;
-    border-color: #3F2F24;
+    border-color: #231F20;
     border-width: 0 0 0 1px;
   }
 
   .search-cancel svg {
     width: 2em;
     height: 2em;
-    stroke: #3F2F24;
+    stroke: #231F20;
   }
   .search-submit svg {
     width: 2em;
     height: 2em;
-    fill: #3F2F24;
+    fill: #231F20;
   }
 
   /* Restrict width in desktop view */
@@ -359,6 +382,15 @@
   }
 
   @media (max-width: 640px) {
+    header {
+      grid-template-columns: 1fr;
+    }
+
+    .search-container {
+      /* Figure out how to do one column */
+      grid-column: 0;
+    }
+
     .search-container, .search-input {
       width: 100%;
     }
@@ -366,6 +398,10 @@
     /* Show less tags in mobile view */
     .tags-container > :nth-child(n + 13){
       display: none;
+    }
+
+    .logo {
+      font-size: 1.5em;
     }
   }
 </style>

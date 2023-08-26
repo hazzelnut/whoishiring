@@ -23,11 +23,11 @@
   svg {
     height: 1em;
     width: 1em;
-    stroke: #3F2F24;
+    stroke: #231F20;
 
     padding: 0.1em;
 
     border-radius: 1em;
-    border: 1px solid #3F2F24;
+    border: 1px solid #231F20;
   }
 </style>

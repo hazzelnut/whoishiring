@@ -15,17 +15,19 @@
 
 <style>
   button {
-    display: inline-flex;
+    display: flex;
+    align-items: center;
     gap: 1em;
 
+    font-family: 'Mulish', sans-serif;
     font-size: 1em;
-    padding: 1em;
+    padding: 0.8em 1em;
 
     border: 1px solid #3F2F24;
     border-radius: 1em;
 
     color: #3F2F24;
-    background-color: #F5F5F0;
+    background-color: #F9F5EB;
   }
 
   button:hover {
@@ -33,8 +35,8 @@
   }
 
   .active {
-    color: #F5F5F0;
-    background-color: #3F2F24;
+    color: #F9F5EB;
+    background-color: #4E7539;
   }
 
   .disabled {

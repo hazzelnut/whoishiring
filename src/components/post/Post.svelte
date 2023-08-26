@@ -35,13 +35,15 @@
 </script>
 
 <div class="post">
-  <div class="post-info">
-    <p class="bold">{post.by}</p>
-    <p>
-      <a href={`https://news.ycombinator.com/item?id=${post.firebaseId}`} target="_blank">
-        {getTimeAgo(post.firebaseCreatedAt)}
-      </a>
-    </p>
+  <div class="post-bar">
+    <div class="post-info">
+      <p class="bold">{post.by}</p>
+      <p>
+        <a href={`https://news.ycombinator.com/item?id=${post.firebaseId}`} target="_blank">
+          {getTimeAgo(post.firebaseCreatedAt)}
+        </a>
+      </p>
+    </div>
     <div class="ml-auto">
       <Button
         toggle={$savedJobs[storyId]?.includes(post.id)}
@@ -65,24 +67,45 @@
 
   div.post {
     position: relative;
-    margin: 1em 0;
+    margin: 1em 0 2em;
     padding: 1em;
-    border: 1px solid #3F2F24;
+    border: 1px solid #231F20;
     border-radius: 1em;
+    border-bottom: 5px solid #231F20;
 
-    color:#3F2F24;
+    color:#231F20;
   }
-  div.post-info{
+  div.post-bar{
     display: flex;
     flex-direction: row;
     gap: 1em;
+
+    /* border-bottom: 1px solid #231F20; */
+    padding-bottom: 1em;
+  }
+  div.post-info {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    flex-wrap: wrap;
   }
   p.content {
     line-height: 1.5;
 
     /* NOTE: Fix for horizonal scrolling? */
     overflow-y: hidden;
+    word-wrap: break-word;
   }
 
+
+  @media (max-width: 640px) {
+    p.content {
+      font-size: 0.9em;
+    }
+
+    div.post-info {
+      display: block;
+    }
+  }
 
 </style>

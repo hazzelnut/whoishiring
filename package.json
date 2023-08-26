@@ -36,6 +36,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fontsource/mulish": "^5.0.8",
+		"@fontsource/unbounded": "^5.0.8",
 		"@types/html-to-text": "^9.0.0",
 		"dotenv": "^16.1.1",
 		"drizzle-orm": "^0.26.3",
