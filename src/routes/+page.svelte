@@ -231,7 +231,9 @@
   </form>
 
   <footer bind:this={footer}>
-    <small>Eric Chan, 2023</small>
+    <small>
+      Made with ❤️ and 😭 -- <a href="https://okeric.com" target="_blank">Eric Chan</a>, 2023
+    </small>
   </footer>
 </main>
 
