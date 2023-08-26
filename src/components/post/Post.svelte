@@ -35,8 +35,8 @@
 </script>
 
 <div class="post">
-  <div class="flex-and-row post-bar">
-    <div class="flex-and-row post-info">
+  <div class="flex-and-row-wrap post-bar">
+    <div class="flex-and-row-wrap post-info">
       <p class="bold">{post.by}</p>
       <p>
         <a href={`https://news.ycombinator.com/item?id=${post.firebaseId}`} target="_blank">
@@ -65,7 +65,7 @@
     margin-left: auto;
   }
 
-  .flex-and-row {
+  .flex-and-row-wrap {
     display: flex;
     flex-direction: row;
     gap: 1em;

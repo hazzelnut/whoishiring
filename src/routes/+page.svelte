@@ -103,7 +103,7 @@
 <main>
   <form data-sveltekit-noscroll>
     <header class="pt-1">
-      <span class="space-x-1">
+      <span class="flex-and-row-wrap gap-1 v-baseline">
         <a class="logo" tabindex="-1" href="https://news.ycombinator.com/submitted?id=whoishiring" target="_blank">
           whoishiring
         </a>
@@ -253,6 +253,10 @@
     flex-wrap: wrap;
   }
 
+  .gap-1 {
+    gap: 1em;
+  }
+
   .gap-half {
     gap: 0.5em;
   }
@@ -263,6 +267,10 @@
 
   .pt-1 {
     padding-top: 1em;
+  }
+
+  .v-baseline {
+    align-items: baseline;
   }
 
   .v-center {
@@ -296,10 +304,6 @@
 
     -webkit-text-decoration: underline wavy #4E7539;
     -webkit-text-underline-line: 0.5em;
-  }
-
-  .space-x-1 > * + *{
-    margin-left: 1em;
   }
 
   /* Header */
@@ -413,6 +417,10 @@
 
     .logo {
       font-size: 1.5em;
+    }
+    .github-logo {
+      height: 1.2em;
+      width: 1.2em;
     }
   }
 </style>
