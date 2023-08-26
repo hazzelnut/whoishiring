@@ -103,14 +103,19 @@
 <main>
   <form data-sveltekit-noscroll>
     <header class="pt-1">
-      <span class="logo">
-        <a href="https://news.ycombinator.com/submitted?id=whoishiring" target="_blank">
+      <span class="space-x-1">
+        <a class="logo" tabindex="-1" href="https://news.ycombinator.com/submitted?id=whoishiring" target="_blank">
           whoishiring
+        </a>
+        <a tabindex="-1" href="https://github.com/hazzelnut/whoishiring" target="_blank">
+          <svg class="github-logo" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#000000" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
         </a>
       </span>
       <div class="search-container">
         <input
-          class="search-input"
+          class="search-input w-100"
           type="text"
           placeholder="Search..."
           bind:value={search}
@@ -239,22 +244,7 @@
     background-color: #F9F5EB;
     border-radius: 1em;
   }
-  button {
-    height: 4em;
-    width: 8em;
-  }
 
-  .logo {
-    font-weight: bolder;
-    font-size: 2em;
-    font-family: 'Unbounded', sans-serif;
-  }
-  .logo > a {
-    text-decoration: none;
-  }
-  .logo > a:visited, .logo > a:link {
-    color: #231F20;
-  }
 
   /* Mini utility-classes */
   .flex-and-row-wrap {
@@ -296,6 +286,10 @@
     font-weight: bolder;
   }
 
+  .w-100 {
+    width: 100%
+  }
+
   .wavy {
     text-decoration: underline wavy #4E7539;
     text-underline-offset: 0.5em;
@@ -304,16 +298,35 @@
     -webkit-text-underline-line: 0.5em;
   }
 
-  /* Search Bar */
+  .space-x-1 > * + *{
+    margin-left: 1em;
+  }
 
+  /* Header */
   header {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    row-gap: 1em;
     column-gap: 1em;
   }
 
+  .logo {
+    font-weight: bolder;
+    font-size: 2em;
+    font-family: 'Unbounded', sans-serif;
+
+    text-decoration: none;
+  }
+  a:visited.logo, a:link.logo {
+    color: #231F20;
+  }
+
+  .github-logo {
+    height: 1.5em;
+    width: 1.5em;
+  }
+
+  /* Search Bar */
   div.search-container {
     position: relative;
 
@@ -324,7 +337,7 @@
     border-radius: 1em;
     background-color: #FCFAF4;
 
-    grid-column: 3/3;
+    grid-column: 2/2;
   }
 
   div.search-container > button {
@@ -383,12 +396,10 @@
 
   @media (max-width: 640px) {
     header {
-      grid-template-columns: 1fr;
-    }
-
-    .search-container {
-      /* Figure out how to do one column */
-      grid-column: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1em;
     }
 
     .search-container, .search-input {
