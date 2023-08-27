@@ -17,6 +17,7 @@
   button {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 1em;
 
     font-family: 'Mulish', sans-serif;

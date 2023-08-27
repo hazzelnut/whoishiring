@@ -160,15 +160,15 @@
     {/if}
 
     <!-- Buttons do a form submit without page refresh -->
-    <div class="flex-and-row-wrap gap-half pv-1">
+    <div class="other-filters pv-1">
       <Sort click={() => toggleSort()} toggle={sortParam?.includes('newest')}>{sortParam || sort}</Sort>
 
       <Switch click={() => remote = !remote} toggle={remoteParam != null}>
-          remote only
+          remote
       </Switch>
 
       <Switch click={() => showSaved = !showSaved} toggle={savedParam != null} disabled={numJobs == 0}>
-        ({numJobs}) saved only
+        ({numJobs}) saved
       </Switch>
     </div>
 
@@ -235,6 +235,7 @@
       Made with ❤️ and 😭 -- <a href="https://okeric.com" target="_blank">Eric Chan</a>, 2023
     </small>
   </footer>
+  <!-- TODO: favicon icon and loading states  -->
 </main>
 
 <style>
@@ -306,6 +307,14 @@
 
     -webkit-text-decoration: underline wavy #4E7539;
     -webkit-text-underline-line: 0.5em;
+  }
+
+  /* Other filters - sort, remote only, saved only */
+  .other-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    column-gap: 1em;
+    row-gap: 1em;
   }
 
   /* Header */
