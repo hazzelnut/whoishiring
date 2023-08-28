@@ -18,9 +18,15 @@ Around the same time, I remembered distinctly the colours of one website I visit
 
 I'm fairly confident colours aren't trademarked so ... I <strike>copied</strike> stole their colours and tweaked it to my liking. Thanks Inflection! I ended up using the colours in the circled blue.
 
+<img width="317" alt="new-colours-new-me" src="https://github.com/hazzelnut/whoishiring/assets/6500879/3009b141-0d86-4e3e-ae6b-c71a1158bdbe">
+
 Second, I added a placeholder loading animation for popular filters. Before it was just a bare, empty space. Now you get to see some shimmering green!
 
+https://github.com/hazzelnut/whoishiring/assets/6500879/6335dd15-b1ac-4e98-a7e3-84451537d35f
+
 Third, and lastly, I modified the layout for the other filters (newest/oldest, remote, saved). I think they look nicer?
+
+https://github.com/hazzelnut/whoishiring/assets/6500879/a7ee4bef-9c0e-47d9-be32-2e9dd8cf5a0e
 
 
 ## August 22, 2023
