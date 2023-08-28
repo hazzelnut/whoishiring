@@ -236,7 +236,7 @@
 
   <footer class="mt-1" bind:this={footer}>
     <small>
-      Made with ❤️ and 😭 -- <a href="https://okeric.com" target="_blank">Eric Chan</a>, 2023
+      Made with ❤️ and 😭 by <a href="https://okeric.com" target="_blank">Eric Chan</a>
     </small>
   </footer>
   <!-- TODO: favicon icon and loading states  -->
