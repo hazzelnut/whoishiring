@@ -6,6 +6,8 @@ It takes all the job posts from the latest monthly HN 'Who is hiring' post, and 
 
 Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev).
 
+Figma designs / scrapbook if you're curious: [here](https://www.figma.com/file/6oFzUK7XW7ZraniN5Yu0so/whoishiring?type=design&node-id=0%3A1&mode=design&t=3cv31bUL0TiVPVvo-1)
+
 ## August 28, 2023
 
 Added some meta tags for previews, title changes, and a favicon! It's pretty much done for now. Version 1.0 finished 🎉!
