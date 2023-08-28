@@ -1,10 +1,16 @@
 ## HN 'Who is hiring?' better job board
 
-I'm using SvelteKit to make this app!
+Tech stack: SvelteKit, DrizzleORM, Fly.io (PostgresDB and Hosting), and vanilla CSS 🍦
 
 It takes all the job posts from the latest monthly HN 'Who is hiring' post, and delivers, I hope, a way better user interface.
 
-Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev) and very much work in-progress.
+Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev).
+
+## August 28, 2023
+
+Added some meta tags for previews, title changes, and a favicon! It's pretty much done for now. Version 1.0 finished 🎉!
+
+
 
 ## August 27, 2023
 
