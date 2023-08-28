@@ -31,7 +31,7 @@
     background-color: #F9F5EB;
   }
 
-  button:hover {
+  button:hover:not(.disabled) {
     cursor: pointer;
   }
 
