@@ -24,10 +24,10 @@
     font-size: 1em;
     padding: 0.8em 1em;
 
-    border: 1px solid #3F2F24;
+    border: 1px solid #231F20;
     border-radius: 1em;
 
-    color: #3F2F24;
+    color: #231F20;
     background-color: #F9F5EB;
   }
 
