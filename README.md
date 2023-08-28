@@ -10,7 +10,7 @@ Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.de
 
 Added some meta tags for previews, title changes, and a favicon! It's pretty much done for now. Version 1.0 finished 🎉!
 
-
+https://github.com/hazzelnut/whoishiring/assets/6500879/24c4a653-67af-4dcb-af57-60c4530bf48c
 
 ## August 27, 2023
 
