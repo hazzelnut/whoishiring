@@ -6,6 +6,23 @@ It takes all the job posts from the latest monthly HN 'Who is hiring' post, and 
 
 Site is currently live: [whoishiring-app.fly.dev](https://whoishiring-app.fly.dev) and very much work in-progress.
 
+## August 27, 2023
+
+So I did three things.
+
+First, I did a makeover treatment for the site - colours and fonts included.
+
+Before I had boring brown. It's not a colour I would usually use for UI, but I thought why not give it a try? The colour wasn't terrible, but I slowly grew tired of it. It wasn't ... exciting? The more I looked at it, the less excited I was to use my own app 😅. I guess colours can do that to a person.
+
+Around the same time, I remembered distinctly the colours of one website I visited. Inflection.ai's. They were neutral but inviting. It was a feeling I wanted for my own app, because jobs searching can be an emotional rollercoaster ride. And I'm tired of corporate greys and blues.
+
+I'm fairly confident colours aren't trademarked so ... I <strike>copied</strike> stole their colours and tweaked it to my liking. Thanks Inflection! I ended up using the colours in the circled blue.
+
+Second, I added a placeholder loading animation for popular filters. Before it was just a bare, empty space. Now you get to see some shimmering green!
+
+Third, and lastly, I modified the layout for the other filters (newest/oldest, remote, saved). I think they look nicer?
+
+
 ## August 22, 2023
 
 Styling the search bar, the filters, and making the site responsive 😎
@@ -14,7 +31,7 @@ https://github.com/hazzelnut/whoishiring/assets/6500879/03f59cbb-8204-4775-92df-
 
 ## August 19, 2023
 
-Time to style the list of filters so they look extra nice 💅. 
+Time to style the list of filters so they look extra nice 💅.
 
 https://github.com/hazzelnut/whoishiring/assets/6500879/04ffbb28-5f87-4db2-b72e-c00dae604d2a
 
@@ -59,10 +76,7 @@ Updating the number of results when 'un-saving' jobs in 'show saved jobs' mode w
 
 Here's a short vid to summarize what you can do with saving now. Also notice the URL changing when 'un-saving' jobs.
 
-
-
 https://github.com/hazzelnut/whoishiring/assets/6500879/59b8bdd6-c90a-477f-a85c-2f4c9dc02dcf
-
 
 
 ## July 11, 2023

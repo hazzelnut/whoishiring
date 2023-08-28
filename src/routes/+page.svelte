@@ -135,6 +135,7 @@
     </header>
 
 
+    <!-- Popular Filters -->
     <div class="pv-1">
       <div class="flex-and-row-wrap gap-half v-center min-h-4">
         <span class="heading wavy">Popular Filters</span>
