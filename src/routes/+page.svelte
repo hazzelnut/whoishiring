@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { formatDate, getTimeAgo } from '$lib/normalize';
   import type { PageData } from './$types';
-  import { htmlToText } from 'html-to-text';
 	import { browser } from '$app/environment';
   import { savedJobs } from '$lib/stores';
   import { onMount } from 'svelte';
@@ -13,6 +11,7 @@
 	import Sort from '../components/button/Sort.svelte';
 	import Reset from '../components/button/Reset.svelte';
 	import Post from '../components/post/Post.svelte';
+	import Placeholder from '../components/placeholder/Placeholder.svelte';
 
   export let data: PageData;
   // NOTE: Destructuring didn't work until I used $:
@@ -54,7 +53,7 @@
   /* Infinite scroll */
   // Ref: https://github.com/rodneylab/sveltekit-instagram-infinite-scroll/blob/main/src/routes/%2Bpage.svelte
   let footer: Element
-  let tags: string[] = []
+  let tagsResponse: Response
   onMount(async () => {
     if (browser) {
       const options = { threshold: 0, rootMargin: '0% 0% 300%'};
@@ -63,8 +62,7 @@
 
       /* Load Tags */
       const url = new URL(window.location.href)
-      const response = await fetch('/api/tags?' + url.searchParams.toString())
-      tags = await response.json()
+      tagsResponse = await fetch('/api/tags?' + url.searchParams.toString())
     }
   });
 
@@ -137,15 +135,16 @@
     </header>
 
 
-    {#if tags.length > 0}
-      <div class="pv-1">
-        <div class="flex-and-row-wrap gap-half v-center min-h-4">
-          <span class="heading wavy">Popular Filters</span>
-          {#if tagsToFilter.length > 0 || tagsParam != null}
-            <Reset click={() => tagsToFilter = []}>reset</Reset>
-          {/if}
-        </div>
-        <div class="tags-container flex-and-row-wrap gap-half">
+    <div class="pv-1">
+      <div class="flex-and-row-wrap gap-half v-center min-h-4">
+        <span class="heading wavy">Popular Filters</span>
+        {#if tagsToFilter.length > 0 || tagsParam != null}
+          <Reset click={() => tagsToFilter = []}>reset</Reset>
+        {/if}
+      </div>
+      <div class="tags-container flex-and-row-wrap gap-half">
+      {#if tagsResponse}
+        {#await tagsResponse.json() then tags}
           {#each tags as tag}
             <div>
               <Button
@@ -155,18 +154,21 @@
               </Button>
             </div>
           {/each}
-        </div>
+        {/await}
+      {:else}
+        {#each Array(2) as _}
+            <Placeholder />
+        {/each}
+      {/if}
       </div>
-    {/if}
+    </div>
 
     <!-- Buttons do a form submit without page refresh -->
     <div class="other-filters pv-1">
       <Sort click={() => toggleSort()} toggle={sortParam?.includes('newest')}>{sortParam || sort}</Sort>
-
       <Switch click={() => remote = !remote} toggle={remoteParam != null}>
-          remote
+        remote
       </Switch>
-
       <Switch click={() => showSaved = !showSaved} toggle={savedParam != null} disabled={numJobs == 0}>
         ({numJobs}) saved
       </Switch>
@@ -223,14 +225,15 @@
       />
     {/if}
 
-    <div class="heading border-top pt-1">{totalCount || 0} results</div>
-
+    <div class="heading border-top pt-1">
+      {totalCount || 0} results
+    </div>
     {#each posts as post}
       <Post post={post} storyId={storyId} />
     {/each}
   </form>
 
-  <footer bind:this={footer}>
+  <footer class="mt-1" bind:this={footer}>
     <small>
       Made with ❤️ and 😭 -- <a href="https://okeric.com" target="_blank">Eric Chan</a>, 2023
     </small>
@@ -266,6 +269,10 @@
 
   .pv-1 {
     padding: 1em 0;
+  }
+
+  .mt-1 {
+    margin-top: 1em;
   }
 
   .pt-1 {

@@ -23,4 +23,3 @@ savedJobs.subscribe((value) => {
     localStorage.savedJobs = JSON.stringify(value);
   }
 });
- 
