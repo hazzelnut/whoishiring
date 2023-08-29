@@ -253,7 +253,7 @@
         </select>
         -->
       {:else}
-        <Placeholder height="2em" width="5em"/>
+        <Placeholder height="1.5em" width="6em"/>
       {/if}
     </div>
 
