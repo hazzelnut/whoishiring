@@ -10,7 +10,7 @@ export const load = (async ({ url }) => {
   }
 
   // BUG: When it reaches the 1st of the month, and the data hasn't been loaded this will result in no posts being
-  // shown to the user
+  // shown to the user - not sure if this is true?
 
   const { data: posts, count: totalCount } = await getJobs(url)
 

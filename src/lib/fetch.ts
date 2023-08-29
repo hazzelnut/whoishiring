@@ -92,8 +92,6 @@ export async function getJobs(url: URL) {
   }
 }
 
-
-// TODO: get the latestStory
 export async function getPopularTags(storyId: number) {
   const data = await db.select({
                           tag: StoryToTags.tag
