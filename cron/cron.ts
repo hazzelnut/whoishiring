@@ -4,6 +4,10 @@ import cron from "node-cron";
 const ingest = async () => {
   /* Serverless data ingestion functions */
   const latestStoryHN = await getLatestStoryHN()
+
+  // TODO: Look into why Story.id might be incremented during upsert sometimes?
+  // Behaviour should be that it doesn't. Check with fly postgres
+  // https://fly.io/docs/postgres/connecting/connecting-with-flyctl/
   const latestStory = await upsertStory(latestStoryHN)
   
   const latestItems = await upsertItems(latestStoryHN.kids, latestStory.id)
