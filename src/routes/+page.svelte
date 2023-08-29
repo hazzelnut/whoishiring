@@ -12,6 +12,7 @@
 	import Reset from '../components/button/Reset.svelte';
 	import Post from '../components/post/Post.svelte';
 	import Placeholder from '../components/placeholder/Placeholder.svelte';
+	import { formatDate } from '$lib/normalize';
 
   export let data: PageData;
   // NOTE: Destructuring didn't work until I used $:
@@ -54,6 +55,7 @@
   // Ref: https://github.com/rodneylab/sveltekit-instagram-infinite-scroll/blob/main/src/routes/%2Bpage.svelte
   let footer: Element
   let tagsResponse: Response
+  let storiesResponse: Response
   onMount(async () => {
     if (browser) {
       const options = { threshold: 0, rootMargin: '0% 0% 300%'};
@@ -63,6 +65,9 @@
       /* Load Tags */
       const url = new URL(window.location.href)
       tagsResponse = await fetch('/api/tags?' + url.searchParams.toString())
+
+      /* Load Stories */
+      storiesResponse = await fetch('/api/stories')
     }
   });
 
@@ -226,12 +231,36 @@
       />
     {/if}
 
-    <div class="heading border-top pt-1">
-      {totalCount || 0} results
+    <div class="flex-and-row-wrap gap-1 justify-between v-center heading border-top pt-1">
+      <span class="bold">{totalCount || 0} results</span>
+
+      {#if storiesResponse}
+        {#await storiesResponse.json() then stories}
+          <!-- NOTE: Temporary - Don't show story link until data has been collected in the DB -->
+          {#if stories[0].id === parseInt(storyId)}
+            <a href={`https://news.ycombinator.com/item?id=${stories[0].firebaseId}`} target="_blank">
+              {formatDate(stories[0].firebaseCreatedAt)}
+            </a>
+          {/if}
+        {/await}
+        <!-- TODO: Make the dates selectable
+        <select>
+          {#await storiesResponse.json() then stories}
+            {#each stories as story}
+              <option>{formatDate(story.firebaseCreatedAt)}</option>
+            {/each}
+          {/await}
+        </select>
+        -->
+      {:else}
+        <Placeholder height="2em" width="5em"/>
+      {/if}
     </div>
+
     {#each posts as post}
       <Post post={post} storyId={storyId} />
     {/each}
+
   </form>
 
   <footer class="mt-1" bind:this={footer}>
@@ -257,6 +286,10 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .justify-between {
+    justify-content: space-between;
   }
 
   .gap-1 {
@@ -301,6 +334,9 @@
 
   .heading {
     font-size: 1.2em;
+  }
+
+  .bold {
     font-weight: bolder;
   }
 

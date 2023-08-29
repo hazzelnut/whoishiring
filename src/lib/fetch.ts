@@ -16,6 +16,14 @@ export async function getLatestStory() {
   return data[0]
 }
 
+export async function getAllStories() {
+  const data = await db.select()
+                       .from(Story)
+                       .orderBy(desc(Story.firebaseCreatedAt))
+
+  if (!data) throw new Error('Could not fetch any stories!')
+  return data
+}
 
 export async function getJobs(url: URL) {
   const sort = url.searchParams.get('sort') || 'newest';
@@ -25,7 +33,7 @@ export async function getJobs(url: URL) {
   const remote = url.searchParams.get('remote') || ''
   const savedJobs = url.searchParams.get('savedJobs') || ''
 
-  let storyId = url.searchParams.get('storyId');
+  let storyId = url.searchParams.get('storyId')
   if (!storyId) {
     const latestStory = await getLatestStory()
     storyId = (latestStory.id).toString()
@@ -89,6 +97,7 @@ export async function getJobs(url: URL) {
   return {
     data,
     ...count[0],
+    storyId
   }
 }
 

@@ -1,11 +1,13 @@
+<script>
+  export let height = '3em'
+  export let width = '100%'
+</script>
 
-<div class="placeholder shimmer"></div>
+<div style={`height: ${height}; width: ${width}`} class="placeholder shimmer"></div>
 
 <style>
   /* Placeholder loading  */
   .placeholder {
-    min-height: 3em;
-    width: 100%;
     background: #d8e3d2;
     border-radius: 1em;
   }
