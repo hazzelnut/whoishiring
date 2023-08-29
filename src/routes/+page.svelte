@@ -51,13 +51,41 @@
     }
   }
 
+  /* Changing url */
+  $:tagsParam = ($page.url.searchParams.get('tags'))?.split(',')
+  $:qParam = $page.url.searchParams.get('q')
+  $:remoteParam = $page.url.searchParams.get('remote')
+  $:savedParam = $page.url.searchParams.get('savedJobs')
+  $:sortParam = $page.url.searchParams.get('sort')
+
   /* Infinite scroll */
   // Ref: https://github.com/rodneylab/sveltekit-instagram-infinite-scroll/blob/main/src/routes/%2Bpage.svelte
   let footer: Element
   let tagsResponse: Response
   let storiesResponse: Response
+
+  /* Remote toggle */
+  let remote = false
+
+  /* Saved jobs toggle */
+  let showSaved = false
+  $: numJobs = $savedJobs[storyId]?.length ?? 0
+  $: if (numJobs == 0) {
+    showSaved = false
+  }
+
   onMount(async () => {
     if (browser) {
+      // Updates toggles based on URL params after DOM loads
+      /* Remote toggle */
+      remote = remoteParam != null
+
+      /* Sort toggle */
+      sort = sortParam || 'newest'
+
+      /* Saved Jobs toggle */
+      showSaved = !(numJobs === 0)
+
       const options = { threshold: 0, rootMargin: '0% 0% 300%'};
       const observer = new IntersectionObserver(loadMoreJobs, options);
       if (footer) observer.observe(footer)
@@ -81,25 +109,10 @@
     }
   }
 
-  /* Remote toggle */
-  let remote = false
 
-  /* Saved Jobs */
-  let showSaved = false
-  $: numJobs = $savedJobs[storyId]?.length ?? 0
-  $: if (numJobs == 0) {
-    showSaved = false
-  }
 
   /* Search Input */
   let search = ''
-
-  /* Changing url */
-  $:tagsParam = ($page.url.searchParams.get('tags'))?.split(',')
-  $:qParam = $page.url.searchParams.get('q')
-  $:remoteParam = $page.url.searchParams.get('remote')
-  $:savedParam = $page.url.searchParams.get('savedJobs')
-  $:sortParam = $page.url.searchParams.get('sort')
 
 </script>
 
@@ -171,11 +184,11 @@
 
     <!-- Buttons do a form submit without page refresh -->
     <div class="other-filters pv-1">
-      <Sort click={() => toggleSort()} toggle={sortParam?.includes('newest')}>{sortParam || sort}</Sort>
-      <Switch click={() => remote = !remote} toggle={remoteParam != null}>
+      <Sort click={() => toggleSort()} toggle={sort === 'newest'}>{sort}</Sort>
+      <Switch click={() => remote = !remote} toggle={remote}>
         remote
       </Switch>
-      <Switch click={() => showSaved = !showSaved} toggle={savedParam != null} disabled={numJobs == 0}>
+      <Switch click={() => showSaved = !showSaved} toggle={showSaved} disabled={numJobs == 0}>
         ({numJobs}) saved
       </Switch>
     </div>
