@@ -26,11 +26,6 @@
   $: totalCount = data.totalCount
   $: storyId = data.storyId
 
-  /* Sorting posts */
-  let sort = 'newest';
-  function toggleSort() {
-    sort = sort === 'oldest' ? 'newest' : 'oldest'
-  }
 
   /* Fetch more posts */
   async function loadMoreJobs() {
@@ -55,14 +50,13 @@
   $:tagsParam = ($page.url.searchParams.get('tags'))?.split(',')
   $:qParam = $page.url.searchParams.get('q')
   $:remoteParam = $page.url.searchParams.get('remote')
-  $:savedParam = $page.url.searchParams.get('savedJobs')
   $:sortParam = $page.url.searchParams.get('sort')
 
-  /* Infinite scroll */
-  // Ref: https://github.com/rodneylab/sveltekit-instagram-infinite-scroll/blob/main/src/routes/%2Bpage.svelte
-  let footer: Element
-  let tagsResponse: Response
-  let storiesResponse: Response
+  /* Sorting posts */
+  let sort = 'newest';
+  function toggleSort() {
+    sort = sort === 'oldest' ? 'newest' : 'oldest'
+  }
 
   /* Remote toggle */
   let remote = false
@@ -74,6 +68,11 @@
     showSaved = false
   }
 
+  /* Infinite scroll */
+  // Ref: https://github.com/rodneylab/sveltekit-instagram-infinite-scroll/blob/main/src/routes/%2Bpage.svelte
+  let footer: Element
+  let tagsResponse: Response
+  let storiesResponse: Response
   onMount(async () => {
     if (browser) {
       // Updates toggles based on URL params after DOM loads
@@ -108,8 +107,6 @@
       tagsToFilter = [...tagsToFilter, tag];
     }
   }
-
-
 
   /* Search Input */
   let search = ''
