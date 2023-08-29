@@ -236,12 +236,13 @@
 
       {#if storiesResponse}
         {#await storiesResponse.json() then stories}
-          <!-- NOTE: Temporary - Don't show story link until data has been collected in the DB -->
-          {#if stories[0].id === parseInt(storyId)}
-            <a href={`https://news.ycombinator.com/item?id=${stories[0].firebaseId}`} target="_blank">
-              {formatDate(stories[0].firebaseCreatedAt)}
+          {#each stories as story}
+          {#if story.id == storyId}
+            <a href={`https://news.ycombinator.com/item?id=${story.firebaseId}`} target="_blank">
+              {formatDate(story.firebaseCreatedAt)}
             </a>
           {/if}
+          {/each}
         {/await}
         <!-- TODO: Make the dates selectable
         <select>
