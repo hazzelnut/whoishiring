@@ -239,7 +239,6 @@
       Made with ❤️ and 😭 by <a href="https://okeric.com" target="_blank">Eric Chan</a>
     </small>
   </footer>
-  <!-- TODO: favicon icon and loading states  -->
 </main>
 
 <style>
