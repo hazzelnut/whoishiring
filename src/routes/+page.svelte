@@ -50,6 +50,7 @@
   $:tagsParam = ($page.url.searchParams.get('tags'))?.split(',')
   $:qParam = $page.url.searchParams.get('q')
   $:remoteParam = $page.url.searchParams.get('remote')
+  $:savedParam = $page.url.searchParams.get('savedJobs')
   $:sortParam = $page.url.searchParams.get('sort')
 
   /* Sorting posts */
@@ -83,7 +84,7 @@
       sort = sortParam || 'newest'
 
       /* Saved Jobs toggle */
-      showSaved = !(numJobs === 0)
+      showSaved = !(numJobs === 0) && savedParam != null
 
       const options = { threshold: 0, rootMargin: '0% 0% 300%'};
       const observer = new IntersectionObserver(loadMoreJobs, options);
@@ -117,7 +118,7 @@
   <form data-sveltekit-noscroll>
     <header class="pt-1">
       <span class="flex-and-row-wrap gap-1 v-baseline">
-        <a class="logo" tabindex="-1" href="https://news.ycombinator.com/submitted?id=whoishiring" target="_blank">
+        <a data-sveltekit-reload class="logo" tabindex="-1" href="/">
           whoishiring
         </a>
         <a tabindex="-1" href="https://github.com/hazzelnut/whoishiring" target="_blank">
